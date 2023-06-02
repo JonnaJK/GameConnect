@@ -10,6 +10,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using GameConnect.Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -23,17 +24,17 @@ namespace GameConnect.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<Models.User> _signInManager;
-        private readonly UserManager<Models.User> _userManager;
-        private readonly IUserStore<Models.User> _userStore;
-        private readonly IUserEmailStore<Models.User> _emailStore;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserStore<User> _userStore;
+        private readonly IUserEmailStore<User> _emailStore; 
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<Models.User> userManager,
-            IUserStore<Models.User> userStore,
-            SignInManager<Models.User> signInManager,
+            UserManager<User> userManager,
+            IUserStore<User> userStore,
+            SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -118,7 +119,7 @@ namespace GameConnect.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 //var user = CreateUser();
-                var user = new Models.User
+                var user = new User
                 {
                     UserName = Input.UserName,
                     Email = Input.Email
@@ -178,13 +179,13 @@ namespace GameConnect.Areas.Identity.Pages.Account
             }
         }
 
-        private IUserEmailStore<Models.User> GetEmailStore()
+        private IUserEmailStore<User> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<Models.User>)_userStore;
+            return (IUserEmailStore<User>)_userStore;
         }
     }
 }

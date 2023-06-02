@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GameConnect.Domain.Data;
+using GameConnect.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using GameForum_Inlämningsuppgift.Data;
-using GameForum_Inlämningsuppgift.Models;
 
 namespace GameConnect.Pages.Manager.TagManager
 {
     public class EditModel : PageModel
     {
-        private readonly GameForum_Inlämningsuppgift.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public EditModel(GameForum_Inlämningsuppgift.Data.ApplicationDbContext context)
+        public EditModel(ApplicationDbContext context)
         {
             _context = context;
         }

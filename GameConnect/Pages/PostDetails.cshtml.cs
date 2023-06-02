@@ -1,6 +1,6 @@
+using GameConnect.Domain.Data;
+using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
-using GameForum_Inlämningsuppgift.Data;
-using GameForum_Inlämningsuppgift.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;

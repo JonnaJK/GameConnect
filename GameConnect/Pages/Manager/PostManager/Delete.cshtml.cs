@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using GameForum_Inlämningsuppgift.Data;
-using GameForum_Inlämningsuppgift.Models;
 using System.IO;
 using GameConnect.Domain.Services;
 using GameConnect.Helpers;
+using GameConnect.Domain.Data;
+using GameConnect.Domain.Entities;
 
 namespace GameConnect.Pages.Manager.PostManager
 {
