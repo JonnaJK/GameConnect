@@ -40,7 +40,8 @@ namespace GameConnect.Pages
                 return RedirectToPage("/UserHome", userToHome);
             }
 
-            AllTags = await _httpService.HttpGetRequest<List<Tag>>("tags");
+            //AllTags = await _httpService.HttpGetRequest<List<Tag>>("tag");
+            AllTags = await _tagService.GetTagsAsync();
             //Category.Name = string.Empty;
 
             if (postId != 0)
@@ -66,7 +67,7 @@ namespace GameConnect.Pages
 
             if (!string.IsNullOrEmpty(tagName))
             {
-                var tag = await _tagService.GetTagByNameAsync(tagName);
+                var tag = await _httpService.HttpGetRequest<Tag>("tag/" + tagName);
                 if (tag != null)
                 {
                     if (AllPosts != null)

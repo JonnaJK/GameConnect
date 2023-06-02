@@ -21,8 +21,14 @@ namespace GameConnect.DAL
             var response = await _httpClient.GetAsync(requestUri);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
-
             return JsonSerializer.Deserialize<T>(content);
+        }
+
+        public async Task HttpPostRequest<T>(string requestUri, T entity)
+        {
+            var jsonString = JsonSerializer.Serialize<T>(entity);
+            var response = await _httpClient.PostAsJsonAsync($"{requestUri}", jsonString);
+            response.EnsureSuccessStatusCode();
         }
     }
 }

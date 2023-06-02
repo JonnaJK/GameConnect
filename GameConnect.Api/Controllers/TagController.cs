@@ -22,5 +22,16 @@ namespace GameConnect.Api.Controllers
             var tagsResponse = tags.MapToResponse();
             return Ok(tagsResponse);
         }
+
+        [HttpGet(ApiEndpoints.Tag.GetByName)]
+        public async Task<IActionResult> GetAsync([FromRoute] string name)
+        {
+            var tag = await _tagService.GetTagByNameAsync(name);
+            if (tag is null)
+                return NotFound();
+
+            var response = tag.MapToResponse();
+            return Ok(response);
+        }
     }
 }
