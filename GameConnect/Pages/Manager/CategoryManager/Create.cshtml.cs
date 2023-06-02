@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using GameConnect.Domain.Entities;
+using GameConnect.Domain.Data;
 
 namespace GameConnect.Pages.Manager.CategoryManager
 {

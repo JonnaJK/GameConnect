@@ -1,4 +1,5 @@
 using GameConnect.Data;
+using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
 using Microsoft.AspNetCore.Identity;
