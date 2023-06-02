@@ -6,9 +6,9 @@ namespace GameConnect.Pages.Manager.CategoryManager
 {
     public class CreateModel : PageModel
     {
-        private readonly GameForum_Inlämningsuppgift.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public CreateModel(GameForum_Inlämningsuppgift.Data.ApplicationDbContext context)
+        public CreateModel(ApplicationDbContext context)
         {
             _context = context;
         }
