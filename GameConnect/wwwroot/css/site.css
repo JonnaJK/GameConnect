@@ -26,27 +26,12 @@ body {
 
 nav {
     display: flex;
-    flex-direction: row;
-    align-content: center;
     background-color: #55868C;
-    height: 60px;
-    width: 100vw;
     box-shadow: #325458 0 8px 10px;
-    column-gap: 50px;
-    row-gap: 50px;
+    align-content: center;
 }
 
-/*.navbar-collapse{
-    display:flex;
-    flex-direction: column;
-}*/
-
-.navbar-toggler-icon{
-    color: black;
-    border: 2px solid black;
-}
-
-.nav-link {
+.navbar-toggler-icon {
     color: black;
 }
 
@@ -79,5 +64,4 @@ nav {
 textarea{
     width: 27vw;
     height: 8vh;
-
 }

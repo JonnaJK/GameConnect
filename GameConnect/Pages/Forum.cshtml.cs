@@ -40,7 +40,7 @@ namespace GameConnect.Pages
                 return RedirectToPage("/UserHome", userToHome);
             }
 
-            AllTags = await _httpService.HttpGetRequest<List<Tag>>("tags");
+            AllTags = await _httpService.HttpGetRequest<List<Tag>>("tag");
             //Category.Name = string.Empty;
 
             if (postId != 0)
