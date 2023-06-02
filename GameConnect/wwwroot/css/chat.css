@@ -1,0 +1,94 @@
+﻿body{
+    background-image: url(/images/pexels-cottonbro-studio-3945655.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+h1 {
+    color: #55868C;
+    text-shadow: 1px 1px white;
+    margin-top: 30px;
+}
+
+.page{
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.sessions, .chatWindow {
+    flex: 0 0 auto;
+}
+
+.sessionPreView {
+    border: 1px solid black;
+    width: 20vw;
+    height: fit-content;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: auto, auto;
+    grid-template-rows: auto, auto;
+    background-color: rgb(255, 255, 255, 0.7);
+}
+
+.viewChatBtn {
+    margin-left: 20px;
+    width: fit-content;
+    height: fit-content;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.chatWindow {
+    display:flex;
+    flex-direction: column-reverse;
+    position: relative;
+    width: 40vw;
+    height: fit-content;
+    max-height: 70vh;
+    overflow: auto;
+    border: 1px solid black;
+    padding: 10px;
+    background-color: rgb(255, 255, 255, 0.7);
+}
+
+.myMessage , .otherMessage {
+    width: fit-content;
+    height: fit-content;
+    padding: 3px;
+    border-radius: 10px;
+    margin-bottom: 5px;
+    border: 1px solid black;
+}
+
+.otherMessage {
+    background-color: whitesmoke;
+}
+
+.myMessage {
+    background-color: lightblue;
+}
+
+.messageHeader{
+    font-weight: 500;
+}
+
+.settingsBtn{
+    position: relative;
+    margin-left: 8px;
+    margin-bottom: 10px;
+    align-self: flex-end;
+}
+
+.settingsWindow{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+    margin-top: 10px;
+    background-color: lightblue;
+    justify-content: center;
+    width: fit-content;
+}
+
+.settingsWindow > .btn{
+    margin: 8px;
+}

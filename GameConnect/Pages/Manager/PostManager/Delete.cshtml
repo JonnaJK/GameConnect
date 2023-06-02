@@ -1,0 +1,55 @@
+﻿@page
+@model             DeleteModel
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h3>Are you sure you want to delete this?</h3>
+@if (Model.Post.Replies.Any())
+{
+    <h5>By deleting this post, you also delete all related replies!</h5>
+}
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Post.Title)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Post.Title)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Post.Text)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Post.Text)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Post.Date)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Post.Date)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Post.Votes)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Post.Votes)
+        </dd>
+        @if (Model.Post.Replies.Any())
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Post.Replies)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Post.Replies.Count)
+            </dd>
+        }
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Post.Id" />
+        <input type="submit" value="Delete" class="btn btn-danger" />
+    </form>
+</div>

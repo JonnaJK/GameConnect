@@ -1,0 +1,148 @@
+﻿.page {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto, auto, auto;
+}
+
+.left {
+    grid-column: 1;
+}
+
+.right {
+    grid-column: 3;
+}
+
+.myMain {
+    width: 900px;
+    max-height: 85vh;
+    grid-column: 2;
+    margin-right: 20px;
+    margin-left: 20px;
+    overflow-y: auto;
+    background-color: rgb(255, 255, 255, 0.8);
+}
+
+.myPosts {
+    width: 879px;
+    margin-top: 30px;
+}
+
+.post {
+    display: grid;
+    grid-template-columns: auto, auto, auto, auto;
+    grid-template-rows: auto, auto, auto;
+    border: solid 2px black;
+    margin-bottom: 10px;
+    background-color: white;
+}
+
+.postImg {
+    width: 100px;
+    height: 100px;
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    margin-right: 50px;
+}
+
+.postTitle {
+    font-size: larger;
+    font-weight: bold;
+    height: fit-content;
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.postText {
+    font-size: medium;
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.postTags {
+    font-weight: lighter;
+    font-style: italic;
+    grid-column: 1;
+    grid-row: 3;
+    margin-left: 5px;
+}
+
+.postDate {
+    font-weight: lighter;
+    font-style: italic;
+    text-align: end;
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.voteDiv{
+    grid-column: 3;
+    grid-row: 1 / span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.upvoteBtn, .downvoteBtn {
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255, 0.6);
+    height: fit-content;
+    width: fit-content;
+}
+
+.upvoteBtn {
+    color: green;
+    border: 1px solid green;
+    margin-top: 10px;
+}
+
+.downvoteBtn {
+    color: red;
+    border: 1px solid red;
+    margin-bottom: 10px;
+}
+
+.postBtn {
+    position: sticky;
+    top: 0;
+    margin-top: 15px;
+}
+
+.detailsBtn, .messageBtn {
+    grid-column: 4;
+    grid-row: 3;
+   /* margin-left: 20px;*/
+    justify-self: end; 
+/*tog bort align-self: end; !!! */
+    background-color: #55868C;
+    border: none;
+    border-radius: 8px;
+}
+
+.replyCount {
+    grid-column: 4;
+    grid-row: 2;
+    justify-self: end;
+    margin-right: 10px;
+}
+
+.postUsername { /*ny !!!!*/
+    grid-column: 4;
+    grid-row: 1;
+    justify-self: end;
+    margin-right: 10px;
+}
+
+.postReplyBtn { /*ny !!!!*/
+    grid-column: 4;
+    grid-row: 2;
+    justify-self: end;
+    margin-right: 10px;
+    height: 40px;
+}
+
+abbr {
+    justify-self: end;
+    grid-column: 4;
+    grid-row: 1;
+    color: red;
+}

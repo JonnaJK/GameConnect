@@ -1,0 +1,40 @@
+﻿.mainPage{
+    display: grid;
+    grid-template-columns: auto, auto;
+}
+
+.post {
+    background-color: whitesmoke;
+    grid-column: 1;
+}
+.post > img {
+    width: 150px;
+    height: 150px;
+}
+
+.reply {
+    background-color: lightgray;
+    margin-left: 75px;
+    grid-column: 1;
+}
+.reply > img {
+    width: 100px;
+    height: 100px;
+}
+
+.replyReply {
+    background-color: lightsteelblue;
+    margin-left: 150px;
+    grid-column: 1;
+}
+.replyReply > img {
+    width: 100px;
+    height: 100px;
+}
+
+.reportBtn {
+    grid-column: 2;
+    height: fit-content;
+    width: fit-content;
+    margin: 30px;
+}

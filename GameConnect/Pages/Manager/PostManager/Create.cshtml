@@ -1,0 +1,63 @@
+﻿@page
+@model             CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Post</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Post.UserId" class="form-control" type="hidden" value="@Model.LoggedInUser.Id" />
+                <span asp-validation-for="Post.UserId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Post.Title" class="control-label"></label>
+                <input asp-for="Post.Title" class="form-control" maxlength="50"/>
+                <span asp-validation-for="Post.Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Post.Text" class="control-label"></label>
+                <textarea asp-for="Post.Text" class="form-control" maxlength="300"></textarea>
+                <span asp-validation-for="Post.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Post.ImageUrl" class="control-label"></label>
+                <input id="image" type="file" class="form-control" name="UploadedImage">
+                @*<span asp-validation-for="Post.ImageUrl" class="text-danger"></span>*@
+            </div>
+            <div class="form-group">
+                <input asp-for="Post.Date" class="form-control" type="hidden" value="@DateTime.Now" />
+                <span asp-validation-for="Post.Date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="Post.Votes" class="form-control" type="hidden" value="0" />
+                <span asp-validation-for="Post.Votes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Post.TagId" class="control-label">Tag</label>
+                <select asp-for="Post.TagId" class="form-control" asp-items="ViewBag.Tag"><option value="0"> None</option></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Post.CategoryId" class="control-label">Category</label>
+                <select asp-for="Post.CategoryId" class="form-control" asp-items="ViewBag.Category"><option value="0"> None</option></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        
+    }
+}

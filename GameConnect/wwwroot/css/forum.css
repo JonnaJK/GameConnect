@@ -1,0 +1,45 @@
+﻿body {
+    background-image: url(/images/pexels-cottonbro-studio-3945655.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    overflow-y: hidden;
+}
+
+#forumBody {
+    display: grid;
+    grid-template-columns: 250px, auto, auto;
+    margin: 0;
+    padding: 0;
+}
+
+#rightDiv{
+    grid-column: 3;
+
+}
+
+.dropdown{
+    position:relative;
+}
+.dropBtn, .dropdown-content button{
+    width: 100px;
+    height: 50px;
+    border-radius: 5%;
+    margin: 10px;
+}
+.dropBtn{
+    width: 150px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.dropdown-content button{
+    display: block;
+}
+
+.dropdown:hover .dropdown-content{
+    display: block;
+}

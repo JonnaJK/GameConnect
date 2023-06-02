@@ -1,0 +1,66 @@
+﻿@page
+
+@    using GameForum_Inlämningsuppgift.Services;
+@    using GameForum_Inlämningsuppgift.Models;
+    using GameConnect.Domain.Services;
+
+@inject UserService UserService;
+
+@model             CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+    var users = await UserService.GetUsersAsync();
+    var loggedInUser = await UserService.GetUserAsync(User);
+}
+
+<h1>New chat</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                @*<select asp-for="@Model.Session.Participants" multiple>*@
+                @*<option value="@user">@user.UserName</option>*@
+                @*</select>*@
+
+                @if (string.IsNullOrEmpty(Model.RecipientId))
+                {
+                    <h3>Choose users to add to the new chat!</h3>
+                    @for (int i = 0; i < users.Count; i++)
+                    {
+                        @if (loggedInUser != users[i])
+                        {
+                            <label for="recipient@(i + 1)">@users[i].UserName</label>
+                            <input id="recipient@(i + 1)" name="RecipientsId" type="checkbox" value="@users[i].Id" />
+                            <br />
+                        }
+                    }
+                }
+                else
+                {
+                    <input id="recipient" name="RecipientsId" type="hidden" value="@Model.RecipientId"/>
+                }
+
+                <input type="hidden" asp-for="NewMessage.UserId" value="@Model.LoggedInUser.Id" />
+                <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now" />
+                <textarea asp-for="@Model.NewMessage.Message" placeholder="New message" maxlength="200"></textarea>
+
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

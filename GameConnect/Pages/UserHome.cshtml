@@ -1,0 +1,140 @@
+﻿@page
+@inject SignInManager<Models.User> SignInManager
+@model             UserHomeModel
+@{
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/userHome.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/postLayout.css" asp-append-version="true" />
+</head>
+
+<body style="background-color: @(Model.LoggedInUser.Background is null ? "#ffffff" : Model.LoggedInUser.Background);">
+
+    <div class="page">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <div class="left">
+                <h3 style="text-align: center;">@Model.LoggedInUser.UserName</h3>
+                <div id="profilePicture">
+                    @if (!String.IsNullOrEmpty(Model.LoggedInUser.ImageUrl))
+                    {
+                        <img class="img-thumbnail" id="picture" src="/images/profilePictures/@Model.LoggedInUser.ImageUrl" alt="Profile picture" />
+                    }
+                    else
+                    {
+                        <img class="img-thumbnail" id="picture" src="/images/profilePictures/default.png" alt="Profile picture" />
+                    }
+                </div>
+                <h4>My favorite games</h4>
+                <div id="favoriteGames">
+                    @if (Model.LoggedInUser.FavoriteGames != null)
+                    {
+                        @foreach (var favoriteGame in Model.LoggedInUser.FavoriteGames)
+                        {
+                            <p>@favoriteGame.Name</p>
+                        }
+                    }
+                    else
+                    {
+                        <p>Add your favorite games in settings</p>
+                    }
+                </div>
+                @if (Model.IsSameUser)
+                {
+                    <a asp-page="/ManageFavoriteGames" class="btn btn-primary">Manage games</a>
+                }
+            </div>
+
+            <div class="myMain">
+                <h2>My posts</h2>
+                @if (Model.IsSameUser)
+                {
+                    <a class="btn btn-primary" id="postBtn" asp-page="/Manager/PostManager/Create">New post</a>
+                }
+                <div class="myPosts">
+                    @if (Model.LoggedInUser.Posts != null)
+                    {
+                        @foreach (var post in Model.LoggedInUser.Posts)
+                        {
+                            <div class="post">
+                                <img class="postImg" src="/images/postImages/@post.ImageUrl">
+                                <span class="postTitle">@post.Title | @post.User.UserName</span>
+                                <span class="postText">@post.Text</span>
+                                <span class="postTags">
+                                    @if (post.Category != null && post.Tag != null)
+                                    {
+                                        <p>@post.Category.Name | @post.Tag.Name</p>
+                                    }
+                                    else if (post.Category != null)
+                                    {
+                                        @post.Category.Name
+                                    }
+                                    else if (post.Tag != null)
+                                    {
+                                        @post.Tag.Name
+                                    }
+                                    </span>
+                                <span class="postDate">Postdate: @post.Date</span>
+                                <div class="voteDiv">
+                                    <a asp-route-upVotePostId="@post.Id" class="btn upvoteBtn">+</a>
+                                    <p>@post.Votes</p>
+                                    <a asp-route-downVotePostId="@post.Id" class="btn downvoteBtn">-</a>
+                                </div>
+
+                                @if (post.Replies != null)
+                                {
+                                    <div class="replyCount"><span>@post.Replies.Count replies</span></div>
+                                }
+                                else
+                                {
+                                    <div class="replyCount"><span>0 replies</span></div>
+                                }
+                                <div class="detailsBtn"><a class="btn btn-primary" asp-route-postId="@post.Id">View Post</a></div>
+                                @if (post.IsReported == true)
+                                {
+                                    <abbr title="This post has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported post*</abbr>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="right">
+                <h4>About @Model.LoggedInUser.UserName</h4>
+                <div id="aboutMe">
+                    @if (!String.IsNullOrEmpty(Model.LoggedInUser.AboutMe))
+                    {
+                        <p>@Model.LoggedInUser.AboutMe</p>
+                    }
+                    else
+                    {
+                        <p>Add an about me text in settings</p>
+                    }
+                </div>
+                <br />
+                @if (Model.IsSameUser)
+                {
+                    <div><a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Manage/Index">Settings</a></div>
+                }
+            </div>
+
+        }
+        else
+        {
+            <div class="alert alert-danger">You have to log in to access this page!</div>
+        }
+
+    </div>
+
+</body>
+
+@*@if (!String.IsNullOrEmpty(Model.LoggedInUser.Background))
+{
+    <script>
+        function setBackground {
+            document.body.style.backgroundColor = @Model.LoggedInUser.Background;
+        }
+    </script>
+}*@

@@ -1,0 +1,63 @@
+﻿@page
+@    using GameForum_Inlämningsuppgift.Services;
+@    using GameForum_Inlämningsuppgift.Models;
+    using GameConnect.Domain.Services;
+@inject UserService UserService;
+@model             EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+    var users = await UserService.GetUsersAsync();
+    var loggedInUser = await UserService.GetUserAsync(User);
+}
+
+<h1>Edit Session</h1>
+
+
+<a asp-route-id="@Model.Session.Id" asp-route-editId="1" class="btn btn-primary">Add participants</a>
+<a asp-route-id="@Model.Session.Id" asp-route-editId="2" class="btn btn-primary">Remove participants</a>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Session.Id" />
+
+            @if (Model.IsAdding)
+            {
+                <h3>Choose users to add to the chat!</h3>
+                @for (int i = 0; i < users.Count; i++)
+                {
+                    @if (loggedInUser != users[i] && !Model.Session.Participants.Contains(users[i]))
+                    {
+                        <label for="recipient@(i + 1)">@users[i].UserName</label>
+                        <input id="recipient@(i + 1)" name="AddRecipientIds" type="checkbox" value="@users[i].Id" />
+                        <br />
+                    }
+                }
+            }
+            else if (Model.IsRemoving)
+            {
+                <h3>Choose users to remove from the chat!</h3>
+                @for (int i = 0; i < users.Count; i++)
+                {
+                    @if (loggedInUser != users[i] && Model.Session.Participants.Contains(users[i]))
+                    {
+                        <label for="recipient@(i + 1)">@users[i].UserName</label>
+                        <input id="recipient@(i + 1)" name="RemoveRecipientIds" type="checkbox" value="@users[i].Id" />
+                        <br />
+                    }
+                }
+            }
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,116 @@
+﻿@page
+@model             AdminModel
+@{
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+
+<h2>Admin settings</h2>
+
+<div>
+    <a asp-page="/Manager/CategoryManager/Index" class="btn btn-primary">Manage Categories</a>
+</div>
+<br />
+<div>
+    <a asp-page="/Manager/TagManager/Index" class="btn btn-primary">Manage Tags</a>
+</div>
+
+<h3>Reported posts</h3>
+@if (Model.ReportedPosts != null && Model.ReportedPosts.Count != 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Title
+                </th>
+                <th>
+                    Text
+                </th>
+                <th>
+                    Delete
+                </th>
+                <th>
+                    Restore
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in Model.ReportedPosts)
+            {
+                <tr>
+                    <td>
+                        <img src="/images/@post.ImageUrl" width="150px" height="150px"/>
+                    </td>
+                    <td>
+                        <p>@post.Title</p>
+                    </td>
+                    <td>
+                        <p>@post.Text</p>
+                    </td>
+                    <td>
+                        <a asp-route-deletePostId="@post.Id">Delete post</a>
+                    </td>
+                    <td>
+                        <a asp-route-restorePostId="@post.Id">Restore post</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h5>Currently no reported posts</h5>
+}
+
+<h3>Reported replies</h3>
+@if (Model.ReportedReplies != null && Model.ReportedReplies.Count != 0)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    Image
+                </th>
+                <th>
+                    Text
+                </th>
+                <th>
+                    Delete
+                </th>
+                <th>
+                    Restore
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reply in Model.ReportedReplies)
+            {
+                <tr>
+                    <td>
+                        <img src="/images/@reply.ImageUrl" width="150px" height="150px" />
+                    </td>
+                    <td>
+                        <p>@reply.Text</p>
+                    </td>
+                    <td>
+                        <a asp-route-deleteReplyId="@reply.Id">Delete reply</a>
+                    </td>
+                    <td>
+                        <a asp-route-restoreReplyId="@reply.Id">Restore reply</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h5>Currently no reported replies</h5>
+}

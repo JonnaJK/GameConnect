@@ -1,0 +1,49 @@
+﻿@page
+@inject SignInManager<Models.User> SignInManager
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+</head>
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="welcomeDiv">
+        <h2>Welcome to "gameforum"!</h2>
+        <p>
+            "Gameforum" is a members only forum for anyone interested in video-games and gaming-consoles!
+            You can customize your entirely own profile-page! Just click on <a asp-page="/UserHome">"MyPage"</a>
+            and choose your customizations in settings.
+        </p>
+        <p>
+            Navigate the forum by choosing a category in the menu above. Here you can read, vote and reply to other users posts,
+            and of course; create your own posts!
+        </p>
+        <p>
+            You can also message other users, for buying/selling items, help with questions, or just to make friends!
+            Note that you are responsible for all information given to other users. We do not recommend you give your full name, credit-card information,
+            phonenumber or adress.
+        </p>
+        <p>
+            Now you are all set to roam "gameforum"!
+            Just one last note, have fun!
+        </p>
+    </div>
+
+}
+else
+{
+    <div class="welcomeDiv">
+        <h2>You are not logged in!</h2>
+        <p>
+            Log in to your account to access "gameforum", you can log in by clicking
+            the log in button in the menu!
+        </p>
+        <p>
+            If you do not have an account, register by clicking the
+            register button in the menu!
+        </p>
+    </div>
+}

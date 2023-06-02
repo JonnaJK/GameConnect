@@ -1,0 +1,48 @@
+﻿@page
+@model             CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Reply</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if(Model.ReplyId != null)
+            {
+                <div class="form-group">
+                    <input asp-for="Reply.ReplyId" type="hidden" class="form-control" value="@Model.ReplyId" />
+                </div>
+            }
+            <div class="form-group">
+                <input asp-for="Reply.UserId" type="hidden" class ="form-control" value="@Model.LoggedInUser.Id" />
+            </div>
+            <div class="form-group">
+                <input asp-for="Reply.PostId" type="hidden" class ="form-control" value="@Model.PostId" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Reply.Text" class="control-label"></label>
+                <textarea asp-for="Reply.Text" class="form-control" maxlength="250"></textarea>
+                <span asp-validation-for="Reply.Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="file" class="form-control" name="UploadedImage">
+            </div>
+            <div class="form-group">
+                <input asp-for="Reply.Votes" class="form-control" type="hidden" value="0" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

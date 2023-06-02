@@ -1,0 +1,141 @@
+﻿@page
+@model             PostDetailsModel
+@{
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/postLayout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/postDetails.css" asp-append-version="true" />
+</head>
+
+<main class="mainPage">
+
+    <div class="post">
+        <img class="postImg" src="/images/postImages/@Model.Post.ImageUrl">
+        <div class="postTitle">@Model.Post.Title | Posted by: <a asp-route-creatorUser="@Model.Post.UserId">@Model.Post.User.UserName</a></div>
+        <div class="postText">@Model.Post.Text</div>
+        <div class="postTags">
+            @if (Model.Post.Category != null && Model.Post.Tag != null)
+            {
+                <p>@Model.Post.Category.Name | @Model.Post.Tag.Name</p>
+            }
+            else if (Model.Post.Category != null)
+            {
+                @Model.Post.Category.Name
+            }
+            else if (Model.Post.Tag != null)
+            {
+                @Model.Post.Tag.Name
+            }
+        </div>
+        <div class="postDate">Postdate: @Model.Post.Date</div>
+        <div class="voteDiv">
+            <a asp-route-upVotePostId="@Model.Post.Id" class="btn upvoteBtn">+</a>
+            <p>@Model.Post.Votes</p>
+            <a asp-route-downVotePostId="@Model.Post.Id" class="btn downvoteBtn">-</a>
+        </div>
+        <a asp-route-postId="@Model.Post.Id" class="btn btn-primary postReplyBtn">Reply</a>
+        @if (Model.IsSameUser != true)
+        {
+            <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@Model.Post.UserId" class="btn btn-primary messageBtn">Send message</a>
+        }
+        else
+        {
+            <a asp-page="/Manager/PostManager/Delete" asp-route-id="@Model.Post.Id" class="btn btn-primary messageBtn">Delete post</a>
+        }
+        @if (Model.Post.IsReported == true)
+        {
+            <abbr title="This post has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported post*</abbr>
+        }
+    </div>
+    <a asp-route-reportedPostId="@Model.Post.Id" class="btn btn-primary reportBtn">Report post</a>
+
+    @if (Model.Post.Replies != null)
+    {
+        @foreach (var reply in Model.Post.Replies)
+        {
+            @if (reply.ReplyId == null)
+            {
+                <div class="post reply">
+                    <img class="postImg" src="/images/postImages/@reply.ImageUrl">
+                    <div class="postText">
+                        <p><a asp-route-creatorUser="@reply.UserId">@reply.User.UserName</a> replied to @Model.Post.User.UserName's post; "@Model.Post.Title"</p>
+                        <p>@reply.Text</p>
+                    </div>
+
+                    <div class="voteDiv">
+                        <a asp-route-upVoteReplyId="@reply.Id" class="btn upvoteBtn">+</a>
+                        <p>@reply.Votes</p>
+                        <a asp-route-downVoteReplyId="@reply.Id" class="btn downvoteBtn">-</a>
+                    </div>
+
+                    <a asp-route-replyId="@reply.Id" class="btn btn-primary postReplyBtn">Reply</a>
+
+                    @if (reply.UserId != Model.LoggedInUser.Id)
+                    {
+                        <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@reply.UserId" class="btn btn-primary messageBtn">Send message</a>
+                    }
+                    else
+                    {
+                        <a asp-page="/Manager/ReplyManager/Delete" asp-route-id="@reply.Id" class="btn btn-primary messageBtn">Delete reply</a>
+                    }
+
+                    @if (reply.IsReported == true)
+                    {
+                        <abbr title="This reply has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported reply*</abbr>
+                    }
+                </div>
+
+                <a asp-route-reportedReplyId="@reply.Id" class="btn btn-primary reportBtn">Report reply</a>
+            }
+            @foreach (var r in reply.Replies)
+            {
+                @if (r.ReplyId != null)
+                {
+                    <div class="post replyReply">
+                        <img class="postImg" src="/images/postImages/@r.ImageUrl">
+                        <div class="postText">
+                            <p>
+                                <a asp-route-creatorUser="@r.UserId">@r.User.UserName</a>
+                                replied to @reply.User.UserName's reply; 
+                                @if (@reply.Text.Length > 50)
+                                {
+                                    @reply.Text.Substring(0, 50)
+                                }
+                                else
+                                {
+                                    @reply.Text
+                                }
+                            </p>
+
+                            <p>@r.Text</p>
+                        </div>
+
+                        <div class="voteDiv">
+                            <a asp-route-upVoteReplyId="@r.Id" class="btn upvoteBtn">+</a>
+                            <p>@r.Votes</p>
+                            <a asp-route-downVoteReplyId="@r.Id" class="btn downvoteBtn">-</a>
+                        </div>
+
+                        <a asp-route-replyId="@reply.Id" class="btn btn-primary postReplyBtn">Reply</a>
+
+                        @if (r.UserId != Model.LoggedInUser.Id)
+                        {
+                            <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@r.UserId" class="btn btn-primary messageBtn">Send message</a>
+                        }
+                        else
+                        {
+                            <a asp-page="/Manager/ReplyManager/Delete" asp-route-id="@r.Id" class="btn btn-primary messageBtn">Delete reply</a>
+                        }
+                        @if (r.IsReported == true)
+                        {
+                            <abbr title="This reply has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported reply*</abbr>
+                        }
+                    </div>
+                    <a asp-route-reportedReplyId="@r.Id" class="btn btn-primary reportBtn">Report reply</a>
+                }
+            }
+            @*}*@
+        }
+    }
+</main>
