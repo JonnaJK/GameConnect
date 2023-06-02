@@ -1,3 +1,4 @@
+using GameConnect.DAL;
 using GameConnect.Data;
 using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
@@ -35,6 +36,7 @@ public class Program
         builder.Services.AddScoped<VoteService>();
         builder.Services.AddScoped<SessionService>();
         builder.Services.AddScoped<ChatMessageService>();
+        builder.Services.AddScoped<HttpService>();
 
         var app = builder.Build();
 

@@ -39,4 +39,21 @@ public static class ContractMapping
             Name = request.Name
         };
     }
+
+    public static TagsResponse MapToResponse(this IEnumerable<Tag> tags)
+    {
+        return new TagsResponse()
+        {
+            Tags = tags.Select(MapToResponse)
+        };
+    }
+
+    public static TagResponse MapToResponse(this Tag tag)
+    {
+        return new TagResponse()
+        {
+            Id = tag.Id,
+            Name = tag.Name
+        };
+    }
 }
