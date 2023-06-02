@@ -1,6 +1,5 @@
-﻿using GameConnect.Domain.Services;
-using GameForum_Inlämningsuppgift.Data;
-using GameForum_Inlämningsuppgift.Models;
+﻿using GameConnect.Domain.Data;
+using GameConnect.Domain.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -41,22 +40,22 @@ namespace GameConnect.Pages
             await _context.SaveChangesAsync();
         }
 
-        private async Task AddRoleToUser(string roleName, string userId)
-        {
-            var user = await _userService.GetUserAsync(userId);
-            if (user is null)
-                return;
+        //private async Task AddRoleToUser(string roleName, string userId)
+        //{
+        //    var user = await _userService.GetUserAsync(userId);
+        //    if (user is null)
+        //        return;
 
-            var roles = await _roleManager.Roles.ToListAsync();
-            if (!roles.Any())
-                return;
+        //    var roles = await _roleManager.Roles.ToListAsync();
+        //    if (!roles.Any())
+        //        return;
 
-            var role = roles.Where(x => x.Name == roleName).FirstOrDefault();
-            if (role is null)
-                return;
+        //    var role = roles.Where(x => x.Name == roleName).FirstOrDefault();
+        //    if (role is null)
+        //        return;
 
-            await _userService.AddRoleToUserAsync(user, role);
-            await _context.SaveChangesAsync();
-        }
+        //    await _userService.AddRoleToUserAsync(user, role);
+        //    await _context.SaveChangesAsync();
+        //}
     }
 }

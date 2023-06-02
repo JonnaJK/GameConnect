@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GameConnect.Domain.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using GameForum_Inlämningsuppgift.Data;
-using GameForum_Inlämningsuppgift.Models;
 
 namespace GameConnect.Pages.Manager.UserManager
 {

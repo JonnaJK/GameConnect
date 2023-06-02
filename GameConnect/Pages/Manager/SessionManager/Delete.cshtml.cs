@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GameConnect.Domain.Data;
+using GameConnect.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using GameForum_Inlämningsuppgift.Data;
-using GameForum_Inlämningsuppgift.Models;
 
 namespace GameConnect.Pages.Manager.SessionManager
 {
     public class DeleteModel : PageModel
     {
-        private readonly GameForum_Inlämningsuppgift.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public DeleteModel(GameForum_Inlämningsuppgift.Data.ApplicationDbContext context)
+        public DeleteModel(ApplicationDbContext context)
         {
             _context = context;
         }
