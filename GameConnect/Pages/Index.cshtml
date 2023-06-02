@@ -1,5 +1,7 @@
 ﻿@page
-@inject SignInManager<Models.User> SignInManager
+@using GameConnect.Domain.Entities;
+
+@inject SignInManager<User> SignInManager
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";

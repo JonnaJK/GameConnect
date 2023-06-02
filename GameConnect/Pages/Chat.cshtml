@@ -41,7 +41,7 @@
                 <button type="submit" class="btn btn-primary">Send message</button>
             </form>
 
-            @foreach (var message in Model.ChatMessages)
+            @foreach (var message in Model.ChatMessages.OrderByDescending(x => x.Date))
             {
                 @if (message.UserId == Model.LoggedInUser.Id)
                 {

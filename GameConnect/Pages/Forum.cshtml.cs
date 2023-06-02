@@ -39,7 +39,7 @@ namespace GameConnect.Pages
             }
 
             AllTags = await _tagService.GetTagsAsync();
-            Category.Name = string.Empty;
+            //Category.Name = string.Empty;
 
             if (postId != 0)
             {

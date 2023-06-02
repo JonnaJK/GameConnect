@@ -14,7 +14,7 @@
         isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
     }
 
-    var categories = await CategoryService.GetAllCategoriesAsync();
+    var categories = await CategoryService.GetAllAsync();
 }
 
 <!DOCTYPE html>

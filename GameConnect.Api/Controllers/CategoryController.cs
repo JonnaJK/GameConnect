@@ -37,17 +37,17 @@ public class CategoryController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet(ApiEndpoints.Category.GetByName)]
-    public async Task<IActionResult> GetAsync([FromRoute] string name)
-    {
-        var category = await _categoryService.GetCategoryByName(name);
-        if (category is null)
-        {
-            return NotFound();
-        }
-        var response = category.MapToResponse();
-        return Ok(response);
-    }
+    //[HttpGet(ApiEndpoints.Category.GetByName)]
+    //public async Task<IActionResult> GetAsync([FromRoute] string name)
+    //{
+    //    var category = await _categoryService.GetCategoryByName(name);
+    //    if (category is null)
+    //    {
+    //        return NotFound();
+    //    }
+    //    var response = category.MapToResponse();
+    //    return Ok(response);
+    //}
 
     [HttpGet(ApiEndpoints.Category.GetAll)]
     public async Task<IActionResult> GetAllAsync()
