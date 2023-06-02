@@ -10,7 +10,7 @@ public static class ApiEndpoints
 
         public const string Create = Base;
         public const string GetById = $"{Base}/{{id:int}}";
-        public const string GetByName = $"{Base}/{{name:string}}";
+        public const string GetByName = $"{Base}/{{name}}";
         public const string GetAll = Base;
         public const string Update = $"{Base}/{{id:int}}";
         public const string Delete = $"{Base}/{{id:int}}";
