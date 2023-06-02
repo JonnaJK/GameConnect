@@ -1,4 +1,6 @@
-﻿@inject SignInManager<GameForum_Inlämningsuppgift.Models.User> SignInManager
+﻿@using GameConnect.Domain.Entities;
+
+@inject SignInManager<User> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

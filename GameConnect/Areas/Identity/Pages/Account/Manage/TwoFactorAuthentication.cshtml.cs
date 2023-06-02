@@ -4,6 +4,7 @@
 
 using System;
 using System.Threading.Tasks;
+using GameConnect.Domain.Entities;
 using GameForum_Inlämningsuppgift.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

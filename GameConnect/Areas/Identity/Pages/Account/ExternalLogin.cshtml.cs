@@ -17,23 +17,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using GameConnect.Domain.Entities;
 
 namespace GameConnect.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class ExternalLoginModel : PageModel
     {
-        private readonly SignInManager<Models.User> _signInManager;
-        private readonly UserManager<Models.User> _userManager;
-        private readonly IUserStore<Models.User> _userStore;
-        private readonly IUserEmailStore<Models.User> _emailStore;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserStore<User> _userStore;
+        private readonly IUserEmailStore<User> _emailStore;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
-            SignInManager<Models.User> signInManager,
-            UserManager<Models.User> userManager,
-            IUserStore<Models.User> userStore,
+            SignInManager<User> signInManager,
+            UserManager<User> userManager,
+            IUserStore<User> userStore,
             ILogger<ExternalLoginModel> logger,
             IEmailSender emailSender)
         {
@@ -156,7 +157,7 @@ namespace GameConnect.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new Models.User
+                var user = new User
                 {
                     UserName = Input.UserName,
                     Email = Input.Email
@@ -205,27 +206,27 @@ namespace GameConnect.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private Models.User CreateUser()
+        private User CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<Models.User>();
+                return Activator.CreateInstance<User>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(Models.User)}'. " +
-                    $"Ensure that '{nameof(Models.User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
+                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the external login page in /Areas/Identity/Pages/Account/ExternalLogin.cshtml");
             }
         }
 
-        private IUserEmailStore<Models.User> GetEmailStore()
+        private IUserEmailStore<User> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<Models.User>)_userStore;
+            return (IUserEmailStore<User>)_userStore;
         }
     }
 }
