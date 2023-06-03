@@ -31,8 +31,14 @@ nav {
     align-content: center;
 }
 
+.navbar-collapse{
+    width: fit-content;
+}
+
 .navbar-toggler-icon {
-    color: black;
+    display: flex;
+    justify-content: center;
+    align-content: center;
 }
 
 .btn:focus, .btn:active:focus{
@@ -58,7 +64,6 @@ nav {
 
 .centerBtn {
     flex: 1 1 auto;
-    justify-self: center;
 }
 
 textarea{

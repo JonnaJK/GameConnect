@@ -21,8 +21,8 @@
                 <div class="sessionPreView">
                     <h5>Chat with: @string.Join(", ", session.Participants)</h5>
                     @*<h6>Latest message from: @session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().User.UserName</h6>*@
-                    <br/>
-                   @* <p>@session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message</p>*@ @*senaste meddelandet i den sessionen*@
+                    <br />
+                    @* <p>@session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message</p>*@ @*senaste meddelandet i den sessionen*@
                     @*<p>You have @session.ChatMessages.ToList().Where(y => y.UserId != Model.LoggedInUser.Id).Count() unread messages</p>*@
                     <a asp-route-sessionId="@session.Id" asp-route-messageRead="true" class="btn btn-primary viewChatBtn">View chat</a>
                 </div>
@@ -47,10 +47,9 @@
                 {
                     <div class="messageWindow myMessage">
                         <span class="messageHeader">@message.User.UserName | @message.Date</span>
-                        <br/>
+                        <br />
                         <span>@message.Message</span>
                     </div>
-
                 }
                 else
                 {
@@ -62,30 +61,35 @@
                 }
             }
 
-            @if (Model.ShowSettings)
-            {
-                <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
+            <div class="settingsDiv">
+                @if (Model.ShowSettings)
+                {
+                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
 
-                <div class="settingsWindow">
+                    <hr />
 
-                    @if (Model.IsSessionCreator)
-                    {
-                        <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
+                    <div class="settingsWindow">
 
-                        <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
-                    }
-                    else
-                    {
-                        <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
-                    }
-                </div>
+                        @if (Model.IsSessionCreator)
+                        {
+                            <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
 
-                <hr />
-            }
-            else
-            {
-                <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
-            }
+                            <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
+                        }
+                        else
+                        {
+                            <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
+                        }
+                    </div>
+
+                    <hr />
+
+                }
+                else
+                {
+                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
+                }
+            </div>
         </div>
     }
 

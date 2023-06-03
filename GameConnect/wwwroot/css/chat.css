@@ -1,4 +1,4 @@
-﻿body{
+﻿body {
     background-image: url(/images/pexels-cottonbro-studio-3945655.jpg);
     background-repeat: no-repeat;
     background-size: cover;
@@ -10,8 +10,8 @@ h1 {
     margin-top: 30px;
 }
 
-.page{
-    display:flex;
+.page {
+    display: flex;
     flex-wrap: wrap;
 }
 
@@ -39,7 +39,7 @@ h1 {
 }
 
 .chatWindow {
-    display:flex;
+    display: flex;
     flex-direction: column-reverse;
     position: relative;
     width: 40vw;
@@ -51,7 +51,7 @@ h1 {
     background-color: rgb(255, 255, 255, 0.7);
 }
 
-.myMessage , .otherMessage {
+.myMessage, .otherMessage {
     width: fit-content;
     height: fit-content;
     padding: 3px;
@@ -68,18 +68,24 @@ h1 {
     background-color: lightblue;
 }
 
-.messageHeader{
+.messageHeader {
     font-weight: 500;
 }
 
-.settingsBtn{
+.settingsBtn {
     position: relative;
-    margin-left: 8px;
-    margin-bottom: 10px;
-    align-self: flex-end;
+    top: 0;
+    margin: 5px;
+    width: fit-content;
 }
 
-.settingsWindow{
+.settingsDiv {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.settingsWindow {
     display: flex;
     flex-direction: column;
     border: 1px solid black;
@@ -89,6 +95,6 @@ h1 {
     width: fit-content;
 }
 
-.settingsWindow > .btn{
-    margin: 8px;
-}
+    .settingsWindow > .btn {
+        margin: 8px;
+    }
