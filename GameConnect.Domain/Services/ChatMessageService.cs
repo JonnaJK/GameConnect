@@ -8,10 +8,12 @@ namespace GameConnect.Domain.Services
     public class ChatMessageService
     {
         private readonly ApplicationDbContext _context;
+        private readonly ChatMessageStatusService _chatMessageStatusService;
 
-        public ChatMessageService(ApplicationDbContext context)
+        public ChatMessageService(ApplicationDbContext context, ChatMessageStatusService chatMessageStatusService)
         {
             _context = context;
+            _chatMessageStatusService = chatMessageStatusService;
         }
 
         public async Task<List<ChatMessage>> ChatMessagesFromSessionIdAsync(int id)
@@ -27,6 +29,7 @@ namespace GameConnect.Domain.Services
         {
             await _context.ChatMessage.AddAsync(message);
             await _context.SaveChangesAsync();
+            await _chatMessageStatusService.AddMessageAsync(message.SessionId, message.Id, message.UserId);
         }
     }
 }

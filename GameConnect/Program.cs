@@ -36,6 +36,7 @@ public class Program
         builder.Services.AddScoped<VoteService>();
         builder.Services.AddScoped<SessionService>();
         builder.Services.AddScoped<ChatMessageService>();
+        builder.Services.AddScoped<ChatMessageStatusService>();
         builder.Services.AddScoped<HttpService>();
 
         var app = builder.Build();

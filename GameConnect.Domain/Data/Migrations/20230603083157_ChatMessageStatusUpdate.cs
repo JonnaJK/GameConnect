@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace GameForum_Inlämningsuppgift.Migrations
+namespace GameConnect.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class AddedChatMessageStatus : Migration
+    public partial class ChatMessageStatusUpdate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,6 +18,7 @@ namespace GameForum_Inlämningsuppgift.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ChatMessageId = table.Column<int>(type: "int", nullable: false),
+                    SessionId = table.Column<int>(type: "int", nullable: false),
                     RecipientId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -25,11 +26,14 @@ namespace GameForum_Inlämningsuppgift.Migrations
                 {
                     table.PrimaryKey("PK_ChatMessageStatus", x => x.Id);
                 });
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ChatMessageStatus");
 
         }
     }

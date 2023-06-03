@@ -17,6 +17,7 @@ namespace GameConnect.Domain.Data
         public DbSet<Tag> Tag { get; set; } = default!;
         public DbSet<FavoriteGame> FavoriteGame { get; set; } = default!;
         public DbSet<ChatMessage> ChatMessage { get; set; } = default!;
+        public DbSet<ChatMessageStatus> ChatMessageStatus { get; set; } = default!;
         public DbSet<Session> Session { get; set; } = default!;
         public DbSet<Vote> Vote { get; set; } = default!;
     }
