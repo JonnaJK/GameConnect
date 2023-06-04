@@ -44,7 +44,7 @@ public static class ContractMapping
     {
         return new TagsResponse()
         {
-            Tags = tags.Select(MapToResponse)
+            Items = tags.Select(MapToResponse)
         };
     }
 
@@ -54,6 +54,23 @@ public static class ContractMapping
         {
             Id = tag.Id,
             Name = tag.Name
+        };
+    }
+
+    public static Tag MapToTag(this CreateTagRequest request)
+    {
+        return new Tag()
+        {
+            Name = request.Name
+        };
+    }
+
+    public static Tag MapToTag(this UpdateTagRequest request, int id)
+    {
+        return new Tag()
+        {
+            Id = id,
+            Name = request.Name
         };
     }
 }

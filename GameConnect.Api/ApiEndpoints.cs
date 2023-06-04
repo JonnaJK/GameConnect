@@ -20,9 +20,9 @@ public static class ApiEndpoints
     {
         private const string Base = $"{ApiBase}/tag";
 
-        public const string GetAll = Base;
+        public const string Create = Base;
         public const string GetByName = $"{Base}/{{name}}";
-
+        public const string GetAll = Base;
         public const string Update = $"{Base}/{{id:int}}";
         public const string Delete = $"{Base}/{{id:int}}";
     }

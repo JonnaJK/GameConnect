@@ -31,8 +31,6 @@ public class Program
         builder.Services.AddScoped<PostService>();
         builder.Services.AddScoped<ReplyService>();
         builder.Services.AddScoped<FavoriteGameService>();
-        builder.Services.AddScoped<TagService>();
-        builder.Services.AddScoped<CategoryService>();
         builder.Services.AddScoped<VoteService>();
         builder.Services.AddScoped<SessionService>();
         builder.Services.AddScoped<ChatMessageService>();

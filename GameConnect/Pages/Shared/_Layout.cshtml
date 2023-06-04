@@ -1,9 +1,12 @@
-﻿@using GameConnect.Domain.Entities;
+﻿@using GameConnect.Contracts.Responses;
+@using GameConnect.Domain.Entities;
 @using GameConnect.Domain.Services;
+@using GameConnect.DAL;
+@using GameConnect.Helpers;
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager;
-@inject CategoryService CategoryService;
+@inject HttpService HttpService;
 @inject UserService UserService;
 
 @{
@@ -14,7 +17,8 @@
         isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
     }
 
-    var categories = await CategoryService.GetAllAsync();
+    var categoriesResponse = await HttpService.HttpGetRequest<CategoriesResponse>("category");
+    var categories = categoriesResponse.MapToCategories();
 }
 
 <!DOCTYPE html>

@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GameConnect.Contracts\GameConnect.Contracts.csproj" />
     <ProjectReference Include="..\GameConnect.Domain\GameConnect.Domain.csproj" />
   </ItemGroup>
 

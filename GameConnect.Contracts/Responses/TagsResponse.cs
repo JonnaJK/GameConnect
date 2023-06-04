@@ -8,7 +8,7 @@ namespace GameConnect.Contracts.Responses
 {
     public class TagsResponse
     {
-        public required IEnumerable<TagResponse> Tags { get; init; } = Enumerable.Empty<TagResponse>();
+        public required IEnumerable<TagResponse> Items { get; init; } = Enumerable.Empty<TagResponse>();
 
     }
 }

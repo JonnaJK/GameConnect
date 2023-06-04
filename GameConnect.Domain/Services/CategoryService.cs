@@ -13,7 +13,6 @@ public class CategoryService
         _context = context;
     }
 
-    #region MovedToApi
     public async Task CreateAsync(Category category)
     {
         await _context.Category.AddAsync(category);
@@ -48,8 +47,6 @@ public class CategoryService
         await _context.SaveChangesAsync();
         return true;
     }
-
-    #endregion
 
     public async Task<Category?> GetCategoryByName(string name)
     {

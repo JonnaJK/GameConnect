@@ -1,4 +1,6 @@
-﻿using GameConnect.Api.Mapping;
+﻿using Azure.Core;
+using GameConnect.Api.Mapping;
+using GameConnect.Contracts.Requests;
 using GameConnect.Domain.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,14 @@ namespace GameConnect.Api.Controllers
         public TagController(TagService tagService)
         {
             _tagService = tagService;
+        }
+
+        [HttpPost(ApiEndpoints.Tag.Create)]
+        public async Task<IActionResult> CreateAsync([FromBody] CreateTagRequest request)
+        {
+            var tag = request.MapToTag();
+            await _tagService.CreateAsync(tag);
+            return Ok();
         }
 
         [HttpGet(ApiEndpoints.Tag.GetAll)]
@@ -32,6 +42,32 @@ namespace GameConnect.Api.Controllers
 
             var response = tag.MapToResponse();
             return Ok(response);
+        }
+
+        [HttpPut(ApiEndpoints.Tag.Update)]
+        public async Task<IActionResult> UpdateAsync([FromRoute] int id,
+            [FromBody] UpdateTagRequest request)
+        {
+            var tag = request.MapToTag(id);
+            var updated = await _tagService.UpdateAsync(tag);
+            if (!updated)
+            {
+                return NotFound();
+            }
+
+            var response = tag.MapToResponse();
+            return Ok(response);
+        }
+
+        [HttpDelete(ApiEndpoints.Tag.Delete)]
+        public async Task<IActionResult> DeleteAsync([FromRoute] int id)
+        {
+            var deleted = await _tagService.DeleteAsync(id);
+            if (!deleted)
+            {
+                return NotFound();
+            }
+            return Ok();
         }
     }
 }
