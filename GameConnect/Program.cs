@@ -31,7 +31,14 @@ public class Program
                 policy => policy.RequireRole("Admin"));
         });
         builder.Services.AddRazorPages(options =>
-            options.Conventions.AuthorizeFolder("/Manager", "Admin"));
+        {
+            options.Conventions.AuthorizeFolder("/Manager/CategoryManager", "Admin");
+            options.Conventions.AuthorizeFolder("/Manager/TagManager", "Admin");
+            options.Conventions.AuthorizeFolder("/Manager/UserManager", "Admin");
+            options.Conventions.AuthorizePage("/Manager/PostManager/Index", "Admin");
+            options.Conventions.AuthorizePage("/Manager/ReplyManager/Index", "Admin");
+            options.Conventions.AuthorizePage("/Manager/SessionManager/Index", "Admin");
+        });
 
         // Dependency Injections
         builder.Services.AddScoped<User>();

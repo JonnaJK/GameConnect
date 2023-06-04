@@ -41,7 +41,7 @@
             <a asp-route-postId="@Model.Post.Id" class="btn btn-primary postReplyBtn">Reply</a>
             @if (Model.IsSameUser != true)
             {
-                <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@Model.Post.UserId" class="btn btn-primary messageBtn">Send message</a>
+                <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@Model.Post.UserId" asp-route-postText="@Model.Post.Text" class="btn btn-primary messageBtn">Send message</a>
             }
             else
             {
@@ -77,7 +77,7 @@
 
                         @if (reply.UserId != Model.LoggedInUser.Id)
                         {
-                            <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@reply.UserId" class="btn btn-primary messageBtn">Send message</a>
+                            <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@reply.UserId" asp-route-postText="@reply.Text" class="btn btn-primary messageBtn">Send message</a>
                         }
                         else
                         {
@@ -125,7 +125,7 @@
 
                             @if (r.UserId != Model.LoggedInUser.Id)
                             {
-                                <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@r.UserId" class="btn btn-primary messageBtn">Send message</a>
+                                <a asp-page="/Manager/SessionManager/Create" asp-route-recipientId="@r.UserId" asp-route-postText="@r.Text" class="btn btn-primary messageBtn">Send message</a>
                             }
                             else
                             {
