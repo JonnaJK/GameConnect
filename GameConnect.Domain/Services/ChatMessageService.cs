@@ -28,5 +28,13 @@ namespace GameConnect.Domain.Services
             await _context.ChatMessage.AddAsync(message);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetAmountOfUnreadMessages(string userId)
+        {
+            var unreadMessages = _context.ChatMessageStatus
+                .Where(x => x.RecipientId == userId && !x.IsRead)
+                .ToList();
+            return unreadMessages.Count;
+        }
     }
 }

@@ -9,13 +9,25 @@
 @inject HttpService HttpService;
 @inject UserService UserService;
 
+@*TODO: Change to chatmessageservice??? *@
+@inject ChatMessageService ChatMessageService;
+
 @{
-    var user = await UserService.GetUserAsync(User);
     var isAdmin = false;
+    var unreadMessages = 0;
+
+    var user = await UserService.GetUserAsync(User);
     if (user != null)
     {
         isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
     }
+
+    if (SignInManager.IsSignedIn(User))
+    {
+        // Check how many unread messages there is
+        unreadMessages = await ChatMessageService.GetAmountOfUnreadMessages(user.Id);
+    }
+
 
     var categoriesResponse = await HttpService.HttpGetRequest<CategoriesResponse>("category");
     var categories = categoriesResponse.MapToCategories();
@@ -50,14 +62,19 @@
                     <a class="navbar-brand cornerBtn btn btn-primary" asp-area="" asp-page="/UserHome">@user.UserName's page</a>
 
                     @*<div class="centerDiv">*@
-                        <a class="navbar-brand btn btn-primary centerBtn" asp-area="" asp-page="/Forum">Start</a>
-                        @foreach (var category in categories)
+                    <a class="navbar-brand btn btn-primary centerBtn" asp-area="" asp-page="/Forum">Start</a>
+                    @foreach (var category in categories)
+                    {
+                        <a class="navbar-brand btn btn-primary centerBtn" asp-area="" asp-page="/Forum" asp-route-categoryName="@category.Name">@category.Name</a>
+                    }
+                    @*  </div>*@
+                    <div>
+                        @if (unreadMessages > 0)
                         {
-                            <a class="navbar-brand btn btn-primary centerBtn" asp-area="" asp-page="/Forum" asp-route-categoryName="@category.Name">@category.Name</a>
+                            <span class="cornerBtnNotice"> @unreadMessages </span>
                         }
-                  @*  </div>*@
-
-                    <a class="navbar-brand btn btn-primary cornerBtn" asp-area="" asp-page="/Chat">Chat</a>
+                        <a class="navbar-brand btn btn-primary cornerBtn" asp-area="" asp-page="/Chat">Chat</a>
+                    </div>
 
                     <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
                         <button type="submit" class="navbar-brand btn btn-primary cornerBtn">Logout</button>
