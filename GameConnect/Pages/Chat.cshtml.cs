@@ -15,11 +15,15 @@ namespace GameConnect.Pages
 
         [BindProperty]
         public ChatMessage NewMessage { get; set; }
+        public List<ChatMessageStatus> UnreadMessages { get; set; }
         public List<Session> Sessions { get; set; }
         public List<ChatMessage> ChatMessages { get; set; }
         public User LoggedInUser { get; set; }
         public bool ShowSettings { get; set; }
         public bool IsSessionCreator { get; set; }
+        public bool IsNoMessagesToShow { get; set; }
+        public List<int> UnreadMessageInSessionId { get; set; }
+        //public int AmountOfUnreadMessages { get; set; }
 
 
         public ChatModel(UserService userService, SessionService sessionService, ChatMessageService chatMessageService, ApplicationDbContext context)
@@ -30,12 +34,24 @@ namespace GameConnect.Pages
             _context = context;
         }
 
-        public async Task<IActionResult> OnGetAsync(int sessionId, Session session, string removeUserId, int settingsSessionId, int deleteSessionId, bool closeSettings)
+        public async Task<IActionResult> OnGetAsync(int sessionId, Session session, string removeUserId, int settingsSessionId, int deleteSessionId, bool closeSettings, bool showMessages)
         {
             LoggedInUser = await _userService.GetUserAsync(User);
             if (LoggedInUser != null)
             {
                 Sessions = await _sessionService.GetSessionsFromUserIdAsync(LoggedInUser);
+                UnreadMessages = await GetUsersUnreadMessages();
+                SortSessionsByUnreadMessages();
+                //AmountOfUnreadMessages = await _chatMessageService.GetAmountOfUnreadMessagesInSession
+            }
+
+            if (showMessages && sessionId != 0)
+            {
+                ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
+                if (ChatMessages != null && ChatMessages.Count == 0)
+                {
+                    IsNoMessagesToShow = true;
+                }
             }
             //if(messageRead && sessionId != 0)
             //{
@@ -116,6 +132,36 @@ namespace GameConnect.Pages
             var session = new Session { Id = NewMessage.SessionId };
 
             return RedirectToPage("/Chat", session);
+        }
+
+        private async Task<List<ChatMessageStatus>> GetUsersUnreadMessages()
+        {
+            return await _chatMessageService.GetUsersUnreadMessages(LoggedInUser);
+        }
+
+        private void SortSessionsByUnreadMessages()
+        {
+            var unreadMessagesInSession = new List<Session>();
+            var readMessagesInSession = new List<Session>();
+            UnreadMessageInSessionId = new List<int>();
+            foreach (var unReadMessage in UnreadMessages)
+            {
+                foreach (var session in Sessions)
+                {
+                    if (session.Id == unReadMessage.Session.Id)
+                    {
+                        unreadMessagesInSession.Add(session);
+                        UnreadMessageInSessionId.Add(session.Id);
+                    }
+                    else
+                    {
+                        readMessagesInSession.Add(session);
+                    }
+                }
+            }
+            Sessions = new List<Session>();
+            Sessions.AddRange(unreadMessagesInSession);
+            Sessions.AddRange(readMessagesInSession);
         }
     }
 }

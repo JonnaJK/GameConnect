@@ -3,6 +3,7 @@
 @inject SignInManager<User> SignInManager;
 @model ChatModel
 @{
+
 }
 <head>
     <link rel="stylesheet" href="~/css/chat.css" asp-append-version="true" />
@@ -20,15 +21,32 @@
         @if (Model.Sessions != null)
         {
             <div class="sessions">
-                @foreach (var session in Model.Sessions.OrderByDescending(x => x.Id))
+                @foreach (var session in Model.Sessions)
                 {
                     <div class="sessionPreView">
-                        <h5>Chat with: @string.Join(", ", session.Participants)</h5>
-                        @*<h6>Latest message from: @session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().User.UserName</h6>*@
-                        <br />
-                        @* <p>@session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message</p>*@ @*senaste meddelandet i den sessionen*@
-                        @*<p>You have @session.ChatMessages.ToList().Where(y => y.UserId != Model.LoggedInUser.Id).Count() unread messages</p>*@
-                        <a asp-route-sessionId="@session.Id" asp-route-messageRead="true" class="btn btn-primary viewChatBtn">View chat</a>
+                        @if (session.Participants != null)
+                        {
+                            <h5>Chat with: @string.Join(", ", session.Participants)</h5>
+                        }
+                        @if (session.ChatMessages != null && session.ChatMessages.Any())
+                        {
+                            @if (session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault() != null && session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().User != null)
+                            {
+                                <h6>Latest message from: @session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().User.UserName</h6>
+
+                                <br />
+                            }
+                            @if (!string.IsNullOrEmpty(session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message))
+                            {
+                                <p>@session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message</p> @*senaste meddelandet i den sessionen*@
+                            }
+                            @if (Model.UnreadMessageInSessionId.Contains(session.Id))
+                            {
+                                @*<p>You have @session.ChatMessages.ToList().Where(y => y.UserId != Model.LoggedInUser.Id).Count() unread messages</p>*@
+                                <p style="color: red">You have unread messages</p>
+                            }
+                        }
+                        <a asp-route-sessionId="@session.Id" asp-route-showMessages="true" class="btn btn-primary viewChatBtn">View chat</a>
                     </div>
                 }
             </div>
@@ -50,7 +68,10 @@
                     @if (message.UserId == Model.LoggedInUser.Id)
                     {
                         <div class="messageWindow myMessage">
-                            <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                            @if (message.User != null)
+                            {
+                                <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                            }
                             <br />
                             <span>@message.Message</span>
                         </div>
@@ -59,7 +80,10 @@
                     else
                     {
                         <div class="messageWindow otherMessage">
-                            <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                            @if (message.User != null)
+                            {
+                                <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                            }
                             <br />
                             <span>@message.Message</span>
                         </div>
@@ -92,9 +116,9 @@
                 }
             </div>
         }
-        else
+        else if (Model.IsNoMessagesToShow)
         {
-            <div class="chatWindow">There are no messages to show, creator have to erase the session</div>
+            <div class="messageWindow otherMessage">There are no messages in this session, cretor must delete the session</div>
         }
 
     </div>
