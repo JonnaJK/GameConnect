@@ -3,6 +3,11 @@
 @inject SignInManager<User> SignInManager
 @model UserHomeModel
 @{
+    var backgroundColor = "#ffffff";
+    if (SignInManager.IsSignedIn(User))
+    {
+        backgroundColor = Model.LoggedInUser.Background is null ? "#ffffff" : Model.LoggedInUser.Background;
+    }
 }
 
 <head>
@@ -10,7 +15,8 @@
     <link rel="stylesheet" href="~/css/postLayout.css" asp-append-version="true" />
 </head>
 
-<body style="background-color: @(Model.LoggedInUser.Background is null ? "#ffffff" : Model.LoggedInUser.Background);">
+
+<body style="background-color: @backgroundColor">
 
     <div class="page">
         @if (SignInManager.IsSignedIn(User))
@@ -75,7 +81,7 @@
                                     {
                                         @post.Tag.Name
                                     }
-                                    </span>
+                                </span>
                                 <span class="postDate">Postdate: @post.Date</span>
                                 <div class="voteDiv">
                                     <a asp-route-upVotePostId="@post.Id" class="btn upvoteBtn">+</a>

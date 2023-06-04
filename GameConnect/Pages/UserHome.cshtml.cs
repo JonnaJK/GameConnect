@@ -14,18 +14,18 @@ namespace GameConnect.Pages
         private readonly UserService _userService;
         private readonly PostService _postService;
         private readonly VoteService _voteService;
-        private readonly ApplicationDbContext _context;
+        private readonly SignInManager<User> _signInManager;
 
         public User LoggedInUser { get; set; }
         public bool IsSameUser { get; set; } = true;
 
-        public UserHomeModel(UserManager<User> userManager, UserService userService, PostService postService, VoteService voteService, ApplicationDbContext context)
+        public UserHomeModel(UserManager<User> userManager, UserService userService, PostService postService, VoteService voteService, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _userService = userService;
             _postService = postService;
             _voteService = voteService;
-            _context = context;
+            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> OnGetAsync(User user, int upVotePostId, int downVotePostId, int postId)
@@ -39,8 +39,11 @@ namespace GameConnect.Pages
             if (user.UserName == null)
             {
                 // Denna if/else del körs när man är inne på någon annans sida och up/down votar deras inlägg. Onödigt då vi ändrar värderna igen i if satserna upVotePostId och downVotePostId
-                LoggedInUser = await _userService.GetUserAsync(User);
-                LoggedInUser.Posts = await _postService.GetPostsForUserAsync(LoggedInUser);
+                if (_signInManager.IsSignedIn(User))
+                {
+                    LoggedInUser = await _userService.GetUserAsync(User);
+                    LoggedInUser.Posts = await _postService.GetPostsForUserAsync(LoggedInUser);
+                }
             }
             else
             {
@@ -53,6 +56,7 @@ namespace GameConnect.Pages
                     LoggedInUser = user;
                 }
             }
+
 
             if (upVotePostId != 0)
             {
