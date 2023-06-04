@@ -1,5 +1,7 @@
 ﻿@page
-@model             AddFavoriteGamesModel
+@using GameConnect.Domain.Entities;
+@model AddFavoriteGamesModel
+@inject SignInManager<User> SignInManager;
 @{
 }
 
@@ -12,16 +14,22 @@
     <br />
 </form>
 
-
-<div>
-    <h3>Your favorite games:</h3>
-    @if (Model.CurrentUser.FavoriteGames != null)
-    {
-        <ul>
-            @foreach (var game in Model.CurrentUser.FavoriteGames)
-            {
-                <li>@game.Name | <a asp-route-removeId="@game.Id">Remove</a></li>
-            }
-        </ul>
-    }
-</div>
+@if (SignInManager.IsSignedIn(User))
+{
+    <div>
+        <h3>Your favorite games:</h3>
+        @if (Model.CurrentUser.FavoriteGames != null)
+        {
+            <ul>
+                @foreach (var game in Model.CurrentUser.FavoriteGames)
+                {
+                    <li>@game.Name | <a asp-route-removeId="@game.Id">Remove</a></li>
+                }
+            </ul>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">You have to log in to access this page!</div>
+}
