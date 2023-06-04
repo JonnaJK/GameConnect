@@ -5,6 +5,7 @@ using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GameConnect;
 public class Program
@@ -22,7 +23,15 @@ public class Program
         builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddRazorPages();
+
+        // Prevents not admin users to access everything in Manager folder
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin",
+                policy => policy.RequireRole("Admin"));
+        });
+        builder.Services.AddRazorPages(options =>
+            options.Conventions.AuthorizeFolder("/Manager", "Admin"));
 
         // Dependency Injections
         builder.Services.AddScoped<User>();

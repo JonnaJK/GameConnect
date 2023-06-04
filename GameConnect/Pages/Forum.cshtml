@@ -1,4 +1,6 @@
 ﻿@page
+@using GameConnect.Domain.Entities;
+@inject SignInManager<User> SignInManager;
 @model ForumModel
 @{
 }
@@ -8,77 +10,84 @@
     <link rel="stylesheet" href="~/css/forum.css" asp-append-version="true" />
 </head>
 
-<div id="forumBody">
-    <div class="dropdown">
-        <button class="dropBtn btn-primary">Sort by console:</button>
-        <div class="dropdown-content">
-            <form method="post">
-                @foreach (var tag in Model.AllTags)
-                {
-                    @if (Model.Category is null)
+@if (SignInManager.IsSignedIn(User))
+{
+    <div id="forumBody">
+        <div class="dropdown">
+            <button class="dropBtn btn-primary">Sort by console:</button>
+            <div class="dropdown-content">
+                <form method="post">
+                    @foreach (var tag in Model.AllTags)
                     {
-                        <button class=" btn-primary" value="@tag.Name-" name="TagName" type="submit">@tag.Name</button>
+                        @if (Model.Category is null)
+                        {
+                            <button class=" btn-primary" value="@tag.Name-" name="TagName" type="submit">@tag.Name</button>
 
+                        }
+                        else
+                        {
+                            <button class=" btn-primary" value="@tag.Name-@Model.Category.Name" name="TagName" type="submit">@tag.Name</button>
+                        }
+                    }
+                </form>
+            </div>
+        </div>
+
+
+        <div class="myMain">
+            @foreach (var post in Model.AllPosts)
+            {
+                <div class="post">
+                    <img class="postImg" src="/images/postImages/@post.ImageUrl">
+                    <div class="postTitle">@post.Title | Posted by:  <a asp-route-creatorUser="@post.UserId">@post.User.UserName</a></div>
+                    <div class="postText">@post.Text</div>
+                    <div class="postTags">
+                        @if (post.Category != null && post.Tag != null)
+                        {
+                            <p>@post.Category.Name | @post.Tag.Name</p>
+                        }
+                        else if (post.Category != null)
+                        {
+                            @post.Category.Name
+                        }
+                        else if (post.Tag != null)
+                        {
+                            @post.Tag.Name
+                        }
+                    </div>
+                    <div class="postDate">Postdate: @post.Date</div>
+                    <div class="voteDiv">
+                        <a asp-route-upVotePostId="@post.Id" class="btn upvoteBtn">+</a>
+                        <p>@post.Votes</p>
+                        <a asp-route-downVotePostId="@post.Id" class="btn downvoteBtn">-</a>
+                    </div>
+                    @if (post.Replies.Count > 0)
+                    {
+                        <div class="replyCount"><span>@post.Replies.Count replies</span></div>
                     }
                     else
                     {
-                        <button class=" btn-primary" value="@tag.Name-@Model.Category.Name" name="TagName" type="submit">@tag.Name</button>
+                        <div class="replyCount"><span>0 replies</span></div>
                     }
-                }
-            </form>
+                    <div class="detailsBtn"><a class="btn btn-primary" asp-route-postId="@post.Id">View Post</a></div>
+
+                    @if (post.IsReported == true)
+                    {
+                        <abbr title="This post has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported post*</abbr>
+                    }
+                </div>
+            }
+
         </div>
-    </div>
 
 
-    <div class="myMain">
-        @foreach (var post in Model.AllPosts)
-        {
-            <div class="post">
-                <img class="postImg" src="/images/postImages/@post.ImageUrl">
-                <div class="postTitle">@post.Title | Posted by:  <a asp-route-creatorUser="@post.UserId">@post.User.UserName</a></div>
-                <div class="postText">@post.Text</div>
-                <div class="postTags">
-                    @if (post.Category != null && post.Tag != null)
-                    {
-                        <p>@post.Category.Name | @post.Tag.Name</p>
-                    }
-                    else if (post.Category != null)
-                    {
-                        @post.Category.Name
-                    }
-                    else if (post.Tag != null)
-                    {
-                        @post.Tag.Name
-                    }
-                </div>
-                <div class="postDate">Postdate: @post.Date</div>
-                <div class="voteDiv">
-                    <a asp-route-upVotePostId="@post.Id" class="btn upvoteBtn">+</a>
-                    <p>@post.Votes</p>
-                    <a asp-route-downVotePostId="@post.Id" class="btn downvoteBtn">-</a>
-                </div>
-                @if (post.Replies.Count > 0)
-                {
-                    <div class="replyCount"><span>@post.Replies.Count replies</span></div>
-                }
-                else
-                {
-                    <div class="replyCount"><span>0 replies</span></div>
-                }
-                <div class="detailsBtn"><a class="btn btn-primary" asp-route-postId="@post.Id">View Post</a></div>
-
-                @if (post.IsReported == true)
-                {
-                    <abbr title="This post has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported post*</abbr>
-                }
-            </div>
-        }
+        <div id="rightDiv">
+            <a class="btn btn-primary" asp-page="/Manager/PostManager/Create">New post</a>
+        </div>
 
     </div>
-
-
-    <div id="rightDiv">
-        <a class="btn btn-primary" asp-page="/Manager/PostManager/Create">New post</a>
-    </div>
-
-</div>
+}
+else
+{
+    <div class="alert alert-danger">You have to log in to access this page!</div>
+}

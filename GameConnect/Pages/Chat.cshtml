@@ -1,4 +1,6 @@
 ﻿@page
+@using GameConnect.Domain.Entities;
+@inject SignInManager<User> SignInManager;
 @model ChatModel
 @{
 }
@@ -7,86 +9,93 @@
 </head>
 
 
-<a asp-page="/Manager/SessionManager/Create" class="btn btn-primary">Start a new conversation!</a>
+@if (SignInManager.IsSignedIn(User))
+{
+    <a asp-page="/Manager/SessionManager/Create" class="btn btn-primary">Start a new conversation!</a>
 
-<h1>Your conversations:</h1>
+    <h1>Your conversations:</h1>
 
-<div class="page">
+    <div class="page">
 
-    @if (Model.Sessions != null)
-    {
-        <div class="sessions">
-            @foreach (var session in Model.Sessions.OrderByDescending(x => x.Id))
-            {
-                <div class="sessionPreView">
-                    <h5>Chat with: @string.Join(", ", session.Participants)</h5>
-                    @*<h6>Latest message from: @session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().User.UserName</h6>*@
-                    <br/>
-                   @* <p>@session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message</p>*@ @*senaste meddelandet i den sessionen*@
-                    @*<p>You have @session.ChatMessages.ToList().Where(y => y.UserId != Model.LoggedInUser.Id).Count() unread messages</p>*@
-                    <a asp-route-sessionId="@session.Id" asp-route-messageRead="true" class="btn btn-primary viewChatBtn">View chat</a>
-                </div>
-            }
-        </div>
-    }
-
-    @if (Model.ChatMessages != null)
-    {
-        <div class="chatWindow">
-            <form method="post">
-                <input type="hidden" asp-for="NewMessage.UserId" value="@Model.LoggedInUser.Id" />
-                <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now" />
-                <input type="hidden" asp-for="NewMessage.SessionId" value="@Model.ChatMessages[0].SessionId" />
-                <textarea asp-for="NewMessage.Message" placeholder="New message" maxlength="200"></textarea>
-                <button type="submit" class="btn btn-primary">Send message</button>
-            </form>
-
-            @foreach (var message in Model.ChatMessages.OrderByDescending(x => x.Date))
-            {
-                @if (message.UserId == Model.LoggedInUser.Id)
+        @if (Model.Sessions != null)
+        {
+            <div class="sessions">
+                @foreach (var session in Model.Sessions.OrderByDescending(x => x.Id))
                 {
-                    <div class="messageWindow myMessage">
-                        <span class="messageHeader">@message.User.UserName | @message.Date</span>
-                        <br/>
-                        <span>@message.Message</span>
-                    </div>
-
-                }
-                else
-                {
-                    <div class="messageWindow otherMessage">
-                        <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                    <div class="sessionPreView">
+                        <h5>Chat with: @string.Join(", ", session.Participants)</h5>
+                        @*<h6>Latest message from: @session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().User.UserName</h6>*@
                         <br />
-                        <span>@message.Message</span>
+                        @* <p>@session.ChatMessages.OrderByDescending(x => x.Id).FirstOrDefault().Message</p>*@ @*senaste meddelandet i den sessionen*@
+                        @*<p>You have @session.ChatMessages.ToList().Where(y => y.UserId != Model.LoggedInUser.Id).Count() unread messages</p>*@
+                        <a asp-route-sessionId="@session.Id" asp-route-messageRead="true" class="btn btn-primary viewChatBtn">View chat</a>
                     </div>
                 }
-            }
+            </div>
+        }
 
-            @if (Model.ShowSettings)
-            {
-                <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
+        @if (Model.ChatMessages != null)
+        {
+            <div class="chatWindow">
+                <form method="post">
+                    <input type="hidden" asp-for="NewMessage.UserId" value="@Model.LoggedInUser.Id" />
+                    <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now" />
+                    <input type="hidden" asp-for="NewMessage.SessionId" value="@Model.ChatMessages[0].SessionId" />
+                    <textarea asp-for="NewMessage.Message" placeholder="New message" maxlength="200"></textarea>
+                    <button type="submit" class="btn btn-primary">Send message</button>
+                </form>
 
-                <div class="settingsWindow">
-
-                    @if (Model.IsSessionCreator)
+                @foreach (var message in Model.ChatMessages.OrderByDescending(x => x.Date))
+                {
+                    @if (message.UserId == Model.LoggedInUser.Id)
                     {
-                        <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
+                        <div class="messageWindow myMessage">
+                            <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                            <br />
+                            <span>@message.Message</span>
+                        </div>
 
-                        <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
                     }
                     else
                     {
-                        <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
+                        <div class="messageWindow otherMessage">
+                            <span class="messageHeader">@message.User.UserName | @message.Date</span>
+                            <br />
+                            <span>@message.Message</span>
+                        </div>
                     }
-                </div>
+                }
 
-                <hr />
-            }
-            else
-            {
-                <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
-            }
-        </div>
-    }
+                @if (Model.ShowSettings)
+                {
+                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
 
-</div>
+                    <div class="settingsWindow">
+
+                        @if (Model.IsSessionCreator)
+                        {
+                            <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
+
+                            <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
+                        }
+                        else
+                        {
+                            <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
+                        }
+                    </div>
+
+                    <hr />
+                }
+                else
+                {
+                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
+                }
+            </div>
+        }
+
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">You have to log in to access this page!</div>
+}
