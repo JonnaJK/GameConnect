@@ -34,7 +34,7 @@
             </div>
         }
 
-        @if (Model.ChatMessages != null)
+        @if (Model.ChatMessages != null && Model.ChatMessages.Count > 0)
         {
             <div class="chatWindow">
                 <form method="post">
@@ -91,6 +91,10 @@
                     <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
                 }
             </div>
+        }
+        else
+        {
+            <div class="chatWindow">There are no messages to show, creator have to erase the session</div>
         }
 
     </div>
