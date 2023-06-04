@@ -30,7 +30,7 @@ namespace GameConnect.Pages
             _context = context;
         }
 
-        public async Task OnGetAsync(int sessionId, Session session, string removeUserId, int settingsSessionId, int deleteSessionId, bool closeSettings)
+        public async Task<IActionResult> OnGetAsync(int sessionId, Session session, string removeUserId, int settingsSessionId, int deleteSessionId, bool closeSettings)
         {
             LoggedInUser = await _userService.GetUserAsync(User);
             if (LoggedInUser != null)
@@ -58,14 +58,14 @@ namespace GameConnect.Pages
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(session.Id);
             }
 
-            if (string.IsNullOrEmpty(removeUserId) && settingsSessionId != 0)
+            if (!string.IsNullOrEmpty(removeUserId) && settingsSessionId != 0)
             {
                 List<string> user = new()
                 {
                     removeUserId
                 };
-
                 await _sessionService.RemoveParticipantFromSessionAsync(user, settingsSessionId);
+                return RedirectToPage("/Chat");
             }
 
             if (settingsSessionId != 0)
@@ -100,7 +100,7 @@ namespace GameConnect.Pages
 
                 await _sessionService.DeleteSessionAsync(deleteSessionId);
             }
-
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
