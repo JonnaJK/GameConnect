@@ -1,6 +1,8 @@
 ﻿using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace GameConnect.Domain.Services
 {
@@ -9,6 +11,7 @@ namespace GameConnect.Domain.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly ChatMessageStatusService _chatMessageStatusService;
+
 
         public ChatMessageService(ApplicationDbContext context, ChatMessageStatusService chatMessageStatusService)
         {
@@ -25,11 +28,11 @@ namespace GameConnect.Domain.Services
                 .ToListAsync();
         }
 
-        public async Task CreateChatMessageAsync(ChatMessage message)
+        public async Task CreateChatMessageAsync(ChatMessage message, ClaimsPrincipal loggedInUser)
         {
             await _context.ChatMessage.AddAsync(message);
             await _context.SaveChangesAsync();
-            await _chatMessageStatusService.AddMessageAsync(message.SessionId, message.Id, message.UserId);
+            await _chatMessageStatusService.AddMessageAsync(message.SessionId, message.Id, message.Session.Participants, loggedInUser);
         }
     }
 }

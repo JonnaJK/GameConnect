@@ -111,7 +111,7 @@ namespace GameConnect.Pages
                 Sessions = await _sessionService.GetSessionsFromUserIdAsync(LoggedInUser);
             }
 
-            await _chatMessageService.CreateChatMessageAsync(NewMessage);
+            await _chatMessageService.CreateChatMessageAsync(NewMessage, User);
 
             var session = new Session { Id = NewMessage.SessionId };
 
