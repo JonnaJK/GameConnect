@@ -108,7 +108,7 @@ namespace GameConnect.Pages
                 await _context.SaveChangesAsync();
                 return RedirectToPage("/Forum");
             }
-
+            post = await _postService.GetPostAsync(post.Id);
             var postUser = await _userService.GetUserAsync(post.UserId);
             if (postUser.Id == LoggedInUser.Id)
             {

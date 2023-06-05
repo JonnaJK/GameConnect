@@ -49,7 +49,7 @@ namespace GameConnect.Pages
             {
                 LoggedInUser = await _userService.GetUserAsync(User);
 
-                user = await _userService.GetUserAsync(user.Id);
+                user = await _userService.GetUserByUserNameAsync(user.UserName);
                 if (user.Id != LoggedInUser.Id)
                 {
                     IsSameUser = false;
@@ -88,11 +88,6 @@ namespace GameConnect.Pages
             }
 
             return Page();
-        }
-
-        public IActionResult ViewPost()
-        {
-            return RedirectToPage("/PostDetails");
         }
     }
 }

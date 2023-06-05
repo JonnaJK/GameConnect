@@ -45,7 +45,7 @@ namespace GameConnect.Domain.Services
             return user;
         }
 
-        internal async Task AddRoleToUserAsync(User? user, IdentityRole identityRole)
+        public async Task AddRoleToUserAsync(User? user, IdentityRole identityRole)
         {
             (await _userManager.Users.FirstOrDefaultAsync(x => x.Id == user.Id)).IsAdmin = true;
             await _userManager.AddToRoleAsync(user, identityRole.Name);
@@ -55,6 +55,21 @@ namespace GameConnect.Domain.Services
         public async Task<List<User>> GetUsersAsync()
         {
             return await _context.User.ToListAsync();
+        }
+
+        public async Task<User?> GetUserByUserNameAsync(string userName)
+        {
+            var user = await _context.User
+                .Include(x => x.Posts)
+                .FirstOrDefaultAsync(x => x.UserName == userName);
+            if (user == null)
+                return null;
+            if (user.Posts != null)
+            {
+                user.Posts = await _postService.SetPostsAsync(user.Posts);
+            }
+            user.FavoriteGames = await _favoriteGameService.GetUsersFavoriteGamesAsync(user);
+            return user;
         }
     }
 }
