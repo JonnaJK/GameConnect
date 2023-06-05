@@ -34,17 +34,19 @@ namespace GameConnect.Pages
         {
             if (!_signInManager.IsSignedIn(User))
                 return Page();
-            
+
             // Reply on post or reply on reply
             if (postId != 0)
             {
                 post = await _postService.GetPostAsync(postId);
-                return RedirectToPage("/Manager/ReplyManager/Create", post);
+                if (post != null)
+                    return RedirectToPage("/Manager/ReplyManager/Create", new Post { Id = post.Id });
             }
             else if (replyId != 0)
             {
                 var reply = await _replyService.GetReplyFromIdAsync(replyId);
-                return RedirectToPage("/Manager/ReplyManager/Create", reply);
+                if (reply != null)
+                    return RedirectToPage("/Manager/ReplyManager/Create", new Reply { Id = reply.Id, PostId = reply.PostId });
             }
 
             // Go to a users page
