@@ -66,12 +66,15 @@
                         {
                             <div class="post">
                                 <img class="postImg" src="/images/postImages/@post.ImageUrl">
-                                <span class="postTitle">@post.Title | @post.User.UserName</span>
+                                @if (post.User != null)
+                                {
+                                    <span class="postTitle">@post.Title | @post.User.UserName</span>
+                                }
                                 <span class="postText">@post.Text</span>
                                 <span class="postTags">
                                     @if (post.Category != null && post.Tag != null)
                                     {
-                                        <p>@post.Category.Name | @post.Tag.Name</p>
+                                        <span>@post.Category.Name | @post.Tag.Name</span>
                                     }
                                     else if (post.Category != null)
                                     {
@@ -126,22 +129,10 @@
                     <div><a class="btn btn-primary" asp-area="Identity" asp-page="/Account/Manage/Index">Settings</a></div>
                 }
             </div>
-
         }
         else
         {
             <div class="alert alert-danger">You have to log in to access this page!</div>
         }
-
     </div>
-
 </body>
-
-@*@if (!String.IsNullOrEmpty(Model.LoggedInUser.Background))
-{
-    <script>
-        function setBackground {
-            document.body.style.backgroundColor = @Model.LoggedInUser.Background;
-        }
-    </script>
-}*@

@@ -10,22 +10,18 @@ namespace GameConnect.Pages
 {
     public class UserHomeModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
         private readonly UserService _userService;
         private readonly PostService _postService;
         private readonly VoteService _voteService;
-        private readonly SignInManager<User> _signInManager;
 
-        public User LoggedInUser { get; set; }
+        public User LoggedInUser { get; set; } = new();
         public bool IsSameUser { get; set; } = true;
 
-        public UserHomeModel(UserManager<User> userManager, UserService userService, PostService postService, VoteService voteService, SignInManager<User> signInManager)
+        public UserHomeModel(UserService userService, PostService postService, VoteService voteService, SignInManager<User> signInManager)
         {
-            _userManager = userManager;
             _userService = userService;
             _postService = postService;
             _voteService = voteService;
-            _signInManager = signInManager;
         }
 
         public async Task<IActionResult> OnGetAsync(User user, int upVotePostId, int downVotePostId, int postId)
@@ -33,57 +29,71 @@ namespace GameConnect.Pages
             if (postId != 0)
             {
                 var post = await _postService.GetPostAsync(postId);
-                return RedirectToPage("PostDetails", post); //new {Post = post, post.Category, post.Tag}
+                if (post != null)
+                    return RedirectToPage("PostDetails", new Post { Id = post.Id });
             }
 
             if (user.UserName == null)
             {
-                // Denna if/else del körs när man är inne på någon annans sida och up/down votar deras inlägg. Onödigt då vi ändrar värderna igen i if satserna upVotePostId och downVotePostId
-                if (_signInManager.IsSignedIn(User))
-                {
-                    LoggedInUser = await _userService.GetUserAsync(User);
+                LoggedInUser = await _userService.GetUserAsync(User);
+                if (LoggedInUser != null)
                     LoggedInUser.Posts = await _postService.GetPostsForUserAsync(LoggedInUser);
-                }
+
             }
             else
             {
                 LoggedInUser = await _userService.GetUserAsync(User);
 
                 user = await _userService.GetUserByUserNameAsync(user.UserName);
-                if (user.Id != LoggedInUser.Id)
+                if (user != null && LoggedInUser != null)
                 {
-                    IsSameUser = false;
-                    LoggedInUser = user;
+                    if (user.Id != LoggedInUser.Id)
+                    {
+                        IsSameUser = false;
+                        LoggedInUser = user;
+                    }
                 }
             }
 
-
+            // Upvote or downvote a post
             if (upVotePostId != 0)
             {
-                var isChanged = await _voteService.AddUpVoteOnPostAsync(LoggedInUser.Id, upVotePostId);
-                if (isChanged)
-                    await _postService.UpVotePostByIdAsync(upVotePostId);
-
-                var post = await _postService.GetPostAsync(upVotePostId);
-                user = await _userService.GetUserAsync(post.UserId);
-                if (user.Id != LoggedInUser.Id)
+                if (LoggedInUser != null)
                 {
-                    IsSameUser = false;
-                    LoggedInUser = user;
+                    var isChanged = await _voteService.AddUpVoteOnPostAsync(LoggedInUser.Id, upVotePostId);
+                    if (isChanged)
+                        await _postService.UpVotePostByIdAsync(upVotePostId);
+
+                    var post = await _postService.GetPostAsync(upVotePostId);
+                    user = await _userService.GetUserAsync(post.UserId);
+                    if (user != null)
+                    {
+                        if (user.Id != LoggedInUser.Id)
+                        {
+                            IsSameUser = false;
+                            LoggedInUser = user;
+                        }
+                    }
                 }
             }
-            if (downVotePostId != 0)
+            else if (downVotePostId != 0)
             {
-                var isChanged = await _voteService.AddDownVoteOnPostAsync(LoggedInUser.Id, downVotePostId);
-                if (isChanged)
-                    await _postService.DownVotePostByIdAsync(downVotePostId);
-
-                var post = await _postService.GetPostAsync(downVotePostId);
-                user = await _userService.GetUserAsync(post.UserId);
-                if (user.Id != LoggedInUser.Id)
+                if (LoggedInUser != null)
                 {
-                    IsSameUser = false;
-                    LoggedInUser = user;
+                    var isChanged = await _voteService.AddDownVoteOnPostAsync(LoggedInUser.Id, downVotePostId);
+                    if (isChanged)
+                        await _postService.DownVotePostByIdAsync(downVotePostId);
+
+                    var post = await _postService.GetPostAsync(downVotePostId);
+                    user = await _userService.GetUserAsync(post.UserId);
+                    if (user != null)
+                    {
+                        if (user.Id != LoggedInUser.Id)
+                        {
+                            IsSameUser = false;
+                            LoggedInUser = user;
+                        }
+                    }
                 }
             }
 
