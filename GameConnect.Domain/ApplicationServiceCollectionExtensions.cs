@@ -19,12 +19,13 @@ public static class ApplicationServiceCollectionExtensions
 
         // Dependency Injections
         services.AddScoped<CategoryService>();
+        services.AddScoped<TagService>();
+
         services.AddScoped<User>();
         services.AddScoped<UserService>(); // Varför kan man inte göra UserService som en Singleton????
         services.AddScoped<PostService>();
         services.AddScoped<ReplyService>();
         services.AddScoped<FavoriteGameService>();
-        services.AddScoped<TagService>();
         services.AddScoped<VoteService>();
         services.AddScoped<SessionService>();
         services.AddScoped<ChatMessageService>();

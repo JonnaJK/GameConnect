@@ -34,5 +34,30 @@ namespace GameConnect.Domain.Services
             await _context.SaveChangesAsync();
             await _chatMessageStatusService.AddMessageAsync(message.SessionId, message.Id, message.Session.Participants, loggedInUser);
         }
+
+        public async Task<int> GetAmountOfUnreadMessagesInSession(string userId, int sessionId)
+        {
+            var unreadMessages = await _context.ChatMessageStatus
+                .Where(x => x.RecipientId == userId && !x.IsRead)
+                .Where(x => x.SessionId == sessionId)
+                .ToListAsync();
+            return unreadMessages.Count;
+        }
+
+        public async Task<int> GetAmountOfUnreadMessages(string userId)
+        {
+            var unreadMessages = await _context.ChatMessageStatus
+                .Where(x => x.RecipientId == userId && !x.IsRead)
+                .ToListAsync();
+            return unreadMessages.Count;
+        }
+
+        public async Task<List<ChatMessageStatus>> GetUsersUnreadMessages(User user)
+        {
+            return await _context.ChatMessageStatus
+                .Include(x => x.Session)
+                .Where(x => x.RecipientId == user.Id && !x.IsRead)
+                .ToListAsync();
+        }
     }
 }

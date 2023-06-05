@@ -28,6 +28,7 @@ namespace GameConnect.Pages.Manager.SessionManager
         [BindProperty]
         public List<string> RecipientsId { get; set; }
         public string RecipientId { get; set; }
+        public string? SendMessageText { get; set; }
 
         public CreateModel(ApplicationDbContext context, ChatMessageService chatMessageService, UserService userService, SessionService sessionService)
         {
@@ -37,13 +38,17 @@ namespace GameConnect.Pages.Manager.SessionManager
             _sessionService = sessionService;
         }
 
-        public async Task<IActionResult> OnGetAsync(string recipientId)
+        public async Task<IActionResult> OnGetAsync(string recipientId, string postText)
         {
             LoggedInUser = await _userService.GetUserAsync(User);
 
             if (!string.IsNullOrEmpty(recipientId))
             {
                 RecipientId = recipientId;
+            }
+            if (!string.IsNullOrEmpty(postText))
+            {
+                SendMessageText = postText;
             }
 
             return Page();

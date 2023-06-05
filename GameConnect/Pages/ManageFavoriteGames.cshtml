@@ -1,27 +1,35 @@
 ﻿@page
-@model             AddFavoriteGamesModel
+@using GameConnect.Domain.Entities;
+@model AddFavoriteGamesModel
+@inject SignInManager<User> SignInManager;
 @{
 }
 
-<br />
-<form method="post">
-    <label asp-for="@Model.FavoriteGame.Name">Add a favorite game</label>
-    <input asp-for="@Model.FavoriteGame.Name" class="form-control" />
+@if (SignInManager.IsSignedIn(User))
+{
     <br />
-    <button class="btn btn-primary" type="submit">Add game</button>
-    <br />
-</form>
+    <form method="post">
+        <label asp-for="@Model.FavoriteGame.Name">Add a favorite game</label>
+        <input asp-for="@Model.FavoriteGame.Name" class="form-control" />
+        <br />
+        <button class="btn btn-primary" type="submit">Add game</button>
+        <br />
+    </form>
 
-
-<div>
-    <h3>Your favorite games:</h3>
-    @if (Model.CurrentUser.FavoriteGames != null)
-    {
-        <ul>
-            @foreach (var game in Model.CurrentUser.FavoriteGames)
-            {
-                <li>@game.Name | <a asp-route-removeId="@game.Id">Remove</a></li>
-            }
-        </ul>
-    }
-</div>
+    <div>
+        <h3>Your favorite games:</h3>
+        @if (Model.CurrentUser.FavoriteGames != null)
+        {
+            <ul>
+                @foreach (var game in Model.CurrentUser.FavoriteGames)
+                {
+                    <li>@game.Name | <a asp-route-removeId="@game.Id">Remove</a></li>
+                }
+            </ul>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-danger">You have to log in to access this page!</div>
+}

@@ -2,16 +2,20 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Data;
+using GameConnect.DAL;
 
 namespace GameConnect.Pages.Manager.CategoryManager
 {
     public class CreateModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
+        private readonly HttpService _httpService;
 
-        public CreateModel(ApplicationDbContext context)
+        [BindProperty]
+        public Category Category { get; set; } = default!;
+
+        public CreateModel(HttpService httpService)
         {
-            _context = context;
+            _httpService = httpService;
         }
 
         public IActionResult OnGet()
@@ -19,21 +23,14 @@ namespace GameConnect.Pages.Manager.CategoryManager
             return Page();
         }
 
-        [BindProperty]
-        public Category Category { get; set; } = default!;
-
-
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUDl Studio\GameConnect
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || _context.Category == null || Category == null)
+            if (!ModelState.IsValid || Category == null)
             {
                 return Page();
             }
 
-            _context.Category.Add(Category);
-            await _context.SaveChangesAsync();
-
+            await _httpService.HttpPostRequest("category/", Category);
             return RedirectToPage("./Index");
         }
     }

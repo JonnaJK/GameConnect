@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using GameConnect.DAL;
 using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -14,14 +15,16 @@ namespace GameConnect.Pages.Manager.CategoryManager
     public class EditModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-
-        public EditModel(ApplicationDbContext context)
-        {
-            _context = context;
-        }
+        private readonly HttpService _httpService;
 
         [BindProperty]
         public Category Category { get; set; } = default!;
+
+        public EditModel(ApplicationDbContext context, HttpService httpService)
+        {
+            _context = context;
+            _httpService = httpService;
+        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -30,7 +33,7 @@ namespace GameConnect.Pages.Manager.CategoryManager
                 return NotFound();
             }
 
-            var category = await _context.Category.FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _httpService.HttpGetRequest<Category>($"category/{id}");
             if (category == null)
             {
                 return NotFound();
@@ -39,39 +42,14 @@ namespace GameConnect.Pages.Manager.CategoryManager
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
-
-            _context.Attach(Category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(Category.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _httpService.HttpUpdateRequest($"category/{Category.Id}", Category);
             return RedirectToPage("./Index");
-        }
-
-        private bool CategoryExists(int id)
-        {
-            return (_context.Category?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

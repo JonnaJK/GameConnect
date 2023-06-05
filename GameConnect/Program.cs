@@ -5,6 +5,7 @@ using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace GameConnect;
 public class Program
@@ -22,7 +23,22 @@ public class Program
         builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
-        builder.Services.AddRazorPages();
+
+        // Prevents not admin users to access everything in Manager folder
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("Admin",
+                policy => policy.RequireRole("Admin"));
+        });
+        builder.Services.AddRazorPages(options =>
+        {
+            options.Conventions.AuthorizeFolder("/Manager/CategoryManager", "Admin");
+            options.Conventions.AuthorizeFolder("/Manager/TagManager", "Admin");
+            options.Conventions.AuthorizeFolder("/Manager/UserManager", "Admin");
+            options.Conventions.AuthorizePage("/Manager/PostManager/Index", "Admin");
+            options.Conventions.AuthorizePage("/Manager/ReplyManager/Index", "Admin");
+            options.Conventions.AuthorizePage("/Manager/SessionManager/Index", "Admin");
+        });
 
         // Dependency Injections
         builder.Services.AddScoped<User>();
@@ -31,8 +47,6 @@ public class Program
         builder.Services.AddScoped<PostService>();
         builder.Services.AddScoped<ReplyService>();
         builder.Services.AddScoped<FavoriteGameService>();
-        builder.Services.AddScoped<TagService>();
-        builder.Services.AddScoped<CategoryService>();
         builder.Services.AddScoped<VoteService>();
         builder.Services.AddScoped<SessionService>();
         builder.Services.AddScoped<ChatMessageService>();

@@ -1,6 +1,8 @@
+using GameConnect.Contracts.Responses;
 using GameConnect.DAL;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
+using GameConnect.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -11,7 +13,6 @@ namespace GameConnect.Pages
         private readonly HttpService _httpService;
 
         private readonly PostService _postService;
-        private readonly TagService _tagService;
         private readonly VoteService _voteService;
         private readonly UserService _userService;
         public List<Post> AllPosts { get; set; }
@@ -23,10 +24,9 @@ namespace GameConnect.Pages
         [BindProperty]
         public string TagName { get; set; }
 
-        public ForumModel(PostService postService, TagService tagService, VoteService voteService, UserService userService, HttpService httpService)
+        public ForumModel(PostService postService, VoteService voteService, UserService userService, HttpService httpService)
         {
             _postService = postService;
-            _tagService = tagService;
             _voteService = voteService;
             _userService = userService;
             _httpService = httpService;
@@ -40,8 +40,8 @@ namespace GameConnect.Pages
                 return RedirectToPage("/UserHome", userToHome);
             }
 
-            AllTags = await _httpService.HttpGetRequest<List<Tag>>("tag");
-            //Category.Name = string.Empty;
+            var tags = await _httpService.HttpGetRequest<TagsResponse>("tag");
+            AllTags = tags.MapToTags();
 
             if (postId != 0)
             {
@@ -51,7 +51,6 @@ namespace GameConnect.Pages
 
             if (!string.IsNullOrEmpty(categoryName))
             {
-                //var category = await _categoryService.GetCategoryByName(categoryName);
                 var category = await _httpService.HttpGetRequest<Category>("category/" + categoryName);
                 if (category != null)
                 {
@@ -66,7 +65,7 @@ namespace GameConnect.Pages
 
             if (!string.IsNullOrEmpty(tagName))
             {
-                var tag = await _tagService.GetTagByNameAsync(tagName);
+                var tag = await _httpService.HttpGetRequest<Tag>("tag/" + tagName);
                 if (tag != null)
                 {
                     if (AllPosts != null)
@@ -97,10 +96,9 @@ namespace GameConnect.Pages
         public async Task OnPostAsync()
         {
             var tagCategory = TagName.Split('-');
-            var tag = await _tagService.GetTagByNameAsync(tagCategory[0]);
+            var tag = await _httpService.HttpGetRequest<Tag>($"tag/{tagCategory[0]}");
             if (tagCategory[1] != string.Empty)
             {
-                //var category = await _categoryService.GetCategoryByName(tagCategory[1]);
                 var category = await _httpService.HttpGetRequest<Category>("category/" + tagCategory[1]);
                 if (category != null)
                 {
@@ -113,7 +111,8 @@ namespace GameConnect.Pages
                 AllPosts = (await _postService.GetPostsAsync()).Where(x => x.TagId == tag.Id).ToList();
             }
 
-            AllTags = await _tagService.GetTagsAsync();
+            var tags = await _httpService.HttpGetRequest<TagsResponse>("tag");
+            AllTags = tags.MapToTags();
         }
     }
 }

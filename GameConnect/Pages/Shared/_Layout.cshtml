@@ -1,20 +1,36 @@
-﻿@using GameConnect.Domain.Entities;
+﻿@using GameConnect.Contracts.Responses;
+@using GameConnect.Domain.Entities;
 @using GameConnect.Domain.Services;
+@using GameConnect.DAL;
+@using GameConnect.Helpers;
 
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager;
-@inject CategoryService CategoryService;
+@inject HttpService HttpService;
 @inject UserService UserService;
 
+@*TODO: Change to chatmessageservice??? *@
+@inject ChatMessageService ChatMessageService;
+
 @{
-    var user = await UserService.GetUserAsync(User);
     var isAdmin = false;
+    var unreadMessages = 0;
+
+    var user = await UserService.GetUserAsync(User);
     if (user != null)
     {
         isAdmin = await UserManager.IsInRoleAsync(user, "Admin");
     }
 
-    var categories = await CategoryService.GetAllAsync();
+    if (SignInManager.IsSignedIn(User))
+    {
+        // Check how many unread messages there is
+        unreadMessages = await ChatMessageService.GetAmountOfUnreadMessages(user.Id);
+    }
+
+
+    var categoriesResponse = await HttpService.HttpGetRequest<CategoriesResponse>("category");
+    var categories = categoriesResponse.MapToCategories();
 }
 
 <!DOCTYPE html>
@@ -63,7 +79,12 @@
 
                         <li class="nav-item cornerBtn">
                                 <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Chat">Chat</a>
+                        @if (unreadMessages > 0)
+                        {
+                            <span class="cornerBtnNotice"> @unreadMessages </span>
+                        }
                             </li>
+                    </div>
 
                         <li class="nav-item cornerBtn">
                                 <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">

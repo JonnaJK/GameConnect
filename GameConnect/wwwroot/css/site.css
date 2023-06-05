@@ -18,7 +18,7 @@ body {
     overflow-y: auto;
 }
 
-.pageContainer{
+.pageContainer {
     display: block;
     width: 100%;
     margin-top: 50px;
@@ -41,7 +41,7 @@ nav {
     align-content: center;
 }
 
-.btn:focus, .btn:active:focus{
+.btn:focus, .btn:active:focus {
     box-shadow: none;
 }
 
@@ -52,21 +52,32 @@ nav {
     box-shadow: none;
 }
 
-    .btn-primary:hover {
-        background-color: #79aeb5;
-        color: white;
-    }
+.btn-primary:hover {
+    background-color: #79aeb5;
+    color: white;
+}
 
 .cornerBtn {
     flex: 0 0 auto;
     color: black;
 }
 
+.cornerBtnNotice {
+    flex: 0 0 auto;
+    color: black;
+    background-color: red;
+    border-radius: 10px 10px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    align-self: center;
+}
+
 .centerBtn {
     flex: 1 1 auto;
 }
 
-textarea{
+textarea {
     width: 27vw;
     height: 8vh;
 }

@@ -1,6 +1,7 @@
 using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -14,21 +15,25 @@ namespace GameConnect.Pages
         private readonly UserService _userService;
         private readonly ReplyService _replyService;
         private readonly VoteService _voteService;
+        private readonly SignInManager<User> _signInManager;
 
         public Post Post { get; set; }
         public User LoggedInUser { get; set; }
         public bool IsSameUser { get; set; }
 
-        public PostDetailsModel(PostService postService, UserService userService, ApplicationDbContext context, ReplyService replyService, VoteService voteService)
+        public PostDetailsModel(PostService postService, UserService userService, ApplicationDbContext context, ReplyService replyService, VoteService voteService, SignInManager<User> signInManager)
         {
             _postService = postService;
             _userService = userService;
             _context = context;
             _replyService = replyService;
             _voteService = voteService;
+            _signInManager = signInManager;
         }
         public async Task<IActionResult> OnGetAsync(Post post, int upVotePostId, int downVotePostId, int upVoteReplyId, int downVoteReplyId, int postId, int replyId, string creatorUser, int reportedPostId, int reportedReplyId)
         {
+            if (!_signInManager.IsSignedIn(User))
+                return Page();
             LoggedInUser = await _userService.GetUserAsync(User);
             if (postId != 0)
             {
