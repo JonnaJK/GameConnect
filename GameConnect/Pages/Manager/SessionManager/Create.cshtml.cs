@@ -76,7 +76,7 @@ namespace GameConnect.Pages.Manager.SessionManager
 
             NewMessage.SessionId = session.Id;
 
-            await _chatMessageService.CreateChatMessageAsync(NewMessage);
+            await _chatMessageService.CreateChatMessageAsync(NewMessage, User);
 
             return RedirectToPage("/Chat");
         }
