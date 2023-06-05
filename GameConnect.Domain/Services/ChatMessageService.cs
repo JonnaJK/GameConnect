@@ -48,12 +48,10 @@ namespace GameConnect.Domain.Services
 
         public async Task<List<ChatMessageStatus>> GetUsersUnreadMessages(User user)
         {
-            var asd = await _context.ChatMessageStatus
-                .Include(x => x.ChatMessage)
+            return await _context.ChatMessageStatus
                 .Include(x => x.Session)
                 .Where(x => x.RecipientId == user.Id && !x.IsRead)
                 .ToListAsync();
-            return asd;
         }
     }
 }
