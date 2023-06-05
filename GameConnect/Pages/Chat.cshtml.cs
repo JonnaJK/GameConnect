@@ -11,6 +11,7 @@ namespace GameConnect.Pages
         private readonly UserService _userService;
         private readonly SessionService _sessionService;
         private readonly ChatMessageService _chatMessageService;
+        private readonly ChatMessageStatusService _chatMessageStatusService;
         private readonly ApplicationDbContext _context;
 
         [BindProperty]
@@ -26,12 +27,13 @@ namespace GameConnect.Pages
         //public int AmountOfUnreadMessages { get; set; }
 
 
-        public ChatModel(UserService userService, SessionService sessionService, ChatMessageService chatMessageService, ApplicationDbContext context)
+        public ChatModel(UserService userService, SessionService sessionService, ChatMessageService chatMessageService, ApplicationDbContext context, ChatMessageStatusService chatMessageStatusService)
         {
             _userService = userService;
             _sessionService = sessionService;
             _chatMessageService = chatMessageService;
             _context = context;
+            _chatMessageStatusService = chatMessageStatusService;
         }
 
         public async Task<IActionResult> OnGetAsync(int sessionId, Session session, string removeUserId, int settingsSessionId, int deleteSessionId, bool closeSettings, bool showMessages)
@@ -48,22 +50,17 @@ namespace GameConnect.Pages
             if (showMessages && sessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
-                if (ChatMessages != null && ChatMessages.Count == 0)
+                if (ChatMessages == null || ChatMessages.Count == 0)
                 {
                     IsNoMessagesToShow = true;
                 }
+                else
+                {
+                    await _chatMessageStatusService.SetMessagesAsReadAsync(UnreadMessages.Where(x => x.SessionId == sessionId).ToList());
+                    session = await _sessionService.GetSessionAsync(sessionId);
+                    return RedirectToPage("/Chat", session);
+                }
             }
-            //if(messageRead && sessionId != 0)
-            //{
-            //    //var messages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
-            //    //foreach (var message in messages.Where(x => x.UserId != LoggedInUser.Id))
-            //    //{
-            //    //    message.IsRead = true;
-            //    //}
-            //    // _context.SaveChanges(); // fungerar inte att awaita?
-
-            //    ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
-            //}
 
             if (sessionId != 0)
             {
@@ -136,7 +133,7 @@ namespace GameConnect.Pages
 
         private async Task<List<ChatMessageStatus>> GetUsersUnreadMessages()
         {
-            return await _chatMessageService.GetUsersUnreadMessages(LoggedInUser);
+            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser);
         }
 
         private void SortSessionsByUnreadMessages()
@@ -144,24 +141,22 @@ namespace GameConnect.Pages
             var unreadMessagesInSession = new List<Session>();
             var readMessagesInSession = new List<Session>();
             UnreadMessageInSessionId = new List<int>();
-            foreach (var unReadMessage in UnreadMessages)
+
+            foreach (var session in Sessions)
             {
-                foreach (var session in Sessions)
+                foreach (var unReadMessage in UnreadMessages)
                 {
                     if (session.Id == unReadMessage.Session.Id)
                     {
                         unreadMessagesInSession.Add(session);
                         UnreadMessageInSessionId.Add(session.Id);
                     }
-                    else
-                    {
-                        readMessagesInSession.Add(session);
-                    }
                 }
+                readMessagesInSession.Add(session);
             }
-            Sessions = new List<Session>();
-            Sessions.AddRange(unreadMessagesInSession);
-            Sessions.AddRange(readMessagesInSession);
+            //Sessions = new List<Session>();
+            //Sessions.AddRange(unreadMessagesInSession);
+            //Sessions.AddRange(readMessagesInSession);
         }
     }
 }

@@ -8,9 +8,7 @@
 @inject UserManager<User> UserManager;
 @inject HttpService HttpService;
 @inject UserService UserService;
-
-@*TODO: Change to chatmessageservice??? *@
-@inject ChatMessageService ChatMessageService;
+@inject ChatMessageStatusService ChatMessageStatusService;
 
 @{
     var isAdmin = false;
@@ -25,7 +23,7 @@
     if (SignInManager.IsSignedIn(User))
     {
         // Check how many unread messages there is
-        unreadMessages = await ChatMessageService.GetAmountOfUnreadMessages(user.Id);
+        unreadMessages = await ChatMessageStatusService.GetAmountOfUnreadMessages(user.Id);
     }
 
 
@@ -48,63 +46,62 @@
 
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon">Menu</span>
-                </button>
-                <div class="navbar-collapse collapse">
-                    <ul class="navbar-nav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon">Menu</span>
+            </button>
+            <div class="navbar-collapse collapse">
+                <ul class="navbar-nav">
 
-                        @if (isAdmin)
-                        {
+                    @if (isAdmin)
+                    {
                         <li class="nav-item cornerBtn">
-                                <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Admin">Admin page</a>
-                            </li>
-                        }
-                        @if (SignInManager.IsSignedIn(User))
-                        {
+                            <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Admin">Admin page</a>
+                        </li>
+                    }
+                    @if (SignInManager.IsSignedIn(User))
+                    {
                         <li class="nav-item cornerBtn">
-                                <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/UserHome">@user.UserName's page</a>@* nullcheck ifall man ska kunna browsa utan att vara inloggad, visa inte isåfall*@
-                            </li>
+                            <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/UserHome">@user.UserName's page</a>@* nullcheck ifall man ska kunna browsa utan att vara inloggad, visa inte isåfall*@
+                        </li>
 
                         <li class="nav-item centerBtn">
-                                <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Forum">Start</a>
-                            </li>
-                            @foreach (var category in categories)
-                            {
+                            <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Forum">Start</a>
+                        </li>
+                        @foreach (var category in categories)
+                        {
                             <li class="nav-item centerBtn">
-                                    <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Forum" asp-route-categoryName="@category.Name">@category.Name</a>
-                                </li>
+                                <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Forum" asp-route-categoryName="@category.Name">@category.Name</a>
+                            </li>
+                        }
+
+                        <li class="nav-item cornerBtn">
+                            @if (unreadMessages > 0)
+                            {
+                                <span class="cornerBtnNotice"> @unreadMessages </span>
                             }
+                            <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Chat">Chat</a>
+                        </li>
 
                         <li class="nav-item cornerBtn">
-                                <a class="navbar-brand btn btn-primary" asp-area="" asp-page="/Chat">Chat</a>
-                        @if (unreadMessages > 0)
-                        {
-                            <span class="cornerBtnNotice"> @unreadMessages </span>
-                        }
-                            </li>
-                    </div>
+                            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                <button type="submit" class="navbar-brand btn btn-primary">Logout</button>
+                            </form>
+                        </li>
+                    }
 
-                        <li class="nav-item cornerBtn">
-                                <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
-                                    <button type="submit" class="navbar-brand btn btn-primary">Logout</button>
-                                </form>
-                            </li>
-                        }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="navbar-brand btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
+                        </li>
 
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="navbar-brand btn btn-primary" asp-area="Identity" asp-page="/Account/Register">Register</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="navbar-brand btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
+                        <li class="nav-item">
+                            <a class="navbar-brand btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        </li>
+                    }
+                </ul>
+            </div>
         </nav>
     </header>
     <div class="container pageContainer">

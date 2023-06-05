@@ -90,43 +90,47 @@
                     }
                 }
 
-            <div class="settingsDiv">
-                @if (Model.ShowSettings)
-                {
-                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
+                <div class="settingsDiv">
+                    @if (Model.ShowSettings)
+                    {
+                        <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
 
-                    <hr />
+                        <hr />
 
-                    <div class="settingsWindow">
+                        <div class="settingsWindow">
 
-                        @if (Model.IsSessionCreator)
-                        {
-                            <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
+                            @if (Model.IsSessionCreator)
+                            {
+                                <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
 
-                            <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
-                        }
-                        else
-                        {
-                            <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
-                        }
-                    </div>
+                                <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
+                            }
+                            else
+                            {
+                                <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
+                            }
+                        </div>
 
-                    <hr />
-                }
-                else
-                {
-                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
-                }
+                        <hr />
+                    }
+                    else
+                    {
+                        <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
+                    }
+                </div>
+
+
             </div>
         }
         else if (Model.IsNoMessagesToShow)
         {
             <div class="messageWindow otherMessage">There are no messages in this session, cretor must delete the session</div>
         }
-
     </div>
 }
+
 else
 {
     <div class="alert alert-danger">You have to log in to access this page!</div>
 }
+

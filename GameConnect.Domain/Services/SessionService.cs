@@ -42,7 +42,7 @@ namespace GameConnect.Domain.Services
                     .Include(x => x.Participants)
                     .Include(x => x.ChatMessages)
                     .ToListAsync();
-            var AllUsersSessions = allSessionsInDatabase.Where(x => x.Participants.Contains(user)).ToList();
+            var AllUsersSessions = allSessionsInDatabase.Where(x => x.Participants.Contains(user)).OrderByDescending(x => x.ChatMessages.Last().Date).ToList();
             return AllUsersSessions;
         }
 

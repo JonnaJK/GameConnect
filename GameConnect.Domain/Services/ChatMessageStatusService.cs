@@ -25,7 +25,7 @@ namespace GameConnect.Domain.Services
 
         public async Task AddMessageAsync(int sessionId, int messageId, ICollection<User> recipients, ClaimsPrincipal currentUser)
         {
-            var loggedInUser = await _userService.GetUserAsync(currentUser); 
+            var loggedInUser = await _userService.GetUserAsync(currentUser);
             foreach (var recipient in recipients.Where(x => x.Id != loggedInUser.Id))
             {
                 ChatMessageStatus message = new ChatMessageStatus()
@@ -38,17 +38,36 @@ namespace GameConnect.Domain.Services
             }
             await _context.SaveChangesAsync();
         }
-
-        public async Task SetMessagesAsReadAsync(List<int> messageIds, string userId)
+        public async Task<int> GetAmountOfUnreadMessagesInSession(string userId, int sessionId)
         {
-            var messages = await _context.ChatMessageStatus.Where(x => x.RecipientId == userId).ToListAsync();
+            var unreadMessages = await _context.ChatMessageStatus
+                .Where(x => x.RecipientId == userId && !x.IsRead)
+                .Where(x => x.SessionId == sessionId)
+                .ToListAsync();
+            return unreadMessages.Count;
+        }
 
-            foreach (var id in messageIds)
+        public async Task<int> GetAmountOfUnreadMessages(string userId)
+        {
+            var unreadMessages = await _context.ChatMessageStatus
+                .Where(x => x.RecipientId == userId && !x.IsRead)
+                .ToListAsync();
+            return unreadMessages.Count;
+        }
+
+        public async Task<List<ChatMessageStatus>> GetUsersUnreadMessages(User user)
+        {
+            return await _context.ChatMessageStatus
+                .Include(x => x.Session)
+                .Where(x => x.RecipientId == user.Id && !x.IsRead)
+                .ToListAsync();
+        }
+
+        public async Task SetMessagesAsReadAsync(List<ChatMessageStatus> messageStatuses)
+        {
+            foreach (var status in messageStatuses)
             {
-                foreach (var message in messages.Where(x => x.Id == id))
-                {
-                    message.IsRead = true;
-                }
+                status.IsRead = true;
             }
             await _context.SaveChangesAsync();
         }
