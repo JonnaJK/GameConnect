@@ -68,7 +68,11 @@
                 {
                     @if (Model.ReadBy.ContainsValue(message.Id))
                     {
-                        <span>Read by: @string.Join(", ", Model.ReadBy.Keys)</span>
+                        <span>Read by: </span>
+                        foreach (var kvp in Model.ReadBy.Where(x => x.Value == message.Id))
+                        {
+                            <span>@kvp.Key </span>
+                        }
                     }
                     @if (message.UserId == Model.LoggedInUser.Id)
                     {
@@ -118,10 +122,10 @@
 
                         <hr />
                     }
-@*                    else
-                    {
-                        <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
-                    }*@
+                    @*                    else
+            {
+            <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
+            }*@
                 </div>
 
 
