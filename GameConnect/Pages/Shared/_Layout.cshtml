@@ -84,12 +84,6 @@
                             </form>
                         </li>
                     }
-                    @if (isAdmin)
-                    {
-                        <li class="nav-item">
-                            <a class="navbar-brand btn btn-primary cornerBtn"  asp-area="" asp-page="/Admin">Admin page</a>
-                        </li>
-                    }
 
                     else
                     {
@@ -99,6 +93,12 @@
 
                         <li class="nav-item">
                             <a class="navbar-brand btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
+                        </li>
+                    }
+                    @if (isAdmin)
+                    {
+                        <li class="nav-item">
+                            <a class="navbar-brand btn btn-primary cornerBtn" asp-area="" asp-page="/Admin">Admin page</a>
                         </li>
                     }
                 </ul>
