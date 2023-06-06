@@ -77,9 +77,10 @@
                             <div class="postText">
                                 @if (reply.User != null && Model.Post.User != null)
                                 {
-                                    <p><a asp-route-creatorUser="@reply.UserId">@reply.User.UserName</a> replied to @Model.Post.User.UserName's post; "@Model.Post.Title.CensorWords(Model.BannedWords)"</p>
+                                    <a asp-route-creatorUser="@reply.UserId">@reply.User.UserName</a>
+                                    <span style="font-style: italic;"> replied to @Model.Post.User.UserName's post; "@Model.Post.Title.CensorWords(Model.BannedWords)"</span>
                                 }
-                                <span>@reply.Text.CensorWords(Model.BannedWords)</span>
+                                <p>@reply.Text.CensorWords(Model.BannedWords)</p>
                             </div>
 
                             <div class="voteDiv">
@@ -120,7 +121,7 @@
                                             @if (r.User != null && reply.User != null)
                                             {
                                                 <a asp-route-creatorUser="@r.UserId">@r.User.UserName</a>
-                                                <span>replied to @reply.User.UserName's reply;</span>
+                                                <span style="font-style: italic;">replied to @reply.User.UserName's reply;</span>
                                             }
                                             @if (@reply.Text.Length > 50)
                                             {

@@ -55,6 +55,32 @@
         @if (Model.ChatMessages != null && Model.ChatMessages.Count > 0)
         {
             <div class="chatWindow">
+
+                <div class="settingsDiv">
+                    @if (Model.ShowSettings)
+                    {
+                        <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
+
+                        <hr />
+
+                        <div class="settingsWindow">
+
+                            @if (Model.IsSessionCreator)
+                            {
+                                <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
+
+                                <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
+                            }
+                            else
+                            {
+                                <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
+                            }
+                        </div>
+
+                        <hr />
+                    }
+                </div>
+
                 <form method="post">
                     <input type="hidden" asp-for="NewMessage.UserId" value="@Model.LoggedInUser.Id" />
                     <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now.ToLocalTime()" />
@@ -63,16 +89,17 @@
                     <button type="submit" class="btn btn-success">Send</button>
                     <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-secondary settingsBtn">Settings</a>
                 </form>
-
                 @foreach (var message in Model.ChatMessages.OrderByDescending(x => x.Date))
                 {
                     @if (Model.ReadBy.ContainsValue(message.Id))
                     {
-                        foreach (var kvp in Model.ReadBy.Where(x => x.Value == message.Id))
-                        {
-                            <span>@kvp.Key </span>
-                        }
-                        <span>Read by: </span>
+                        <span style="font-style: italic;">
+                            Read by:
+                            @foreach (var kvp in Model.ReadBy.Where(x => x.Value == message.Id))
+                            {
+                                <span> @kvp.Key </span>
+                            }
+                        </span>
                     }
                     @if (message.UserId == Model.LoggedInUser.Id)
                     {
@@ -98,35 +125,6 @@
                         </div>
                     }
                 }
-
-                <div class="settingsDiv">
-                    @if (Model.ShowSettings)
-                    {
-                        <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" asp-route-closeSettings="true" class="btn btn-primary settingsBtn">Close Settings</a>
-
-                        <hr />
-
-                        <div class="settingsWindow">
-
-                            @if (Model.IsSessionCreator)
-                            {
-                                <a asp-route-deleteSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Delete chat</a>
-
-                                <a asp-page="/Manager/SessionManager/Edit" asp-route-id="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Edit participants</a>
-                            }
-                            else
-                            {
-                                <a asp-route-removeUserId="@Model.LoggedInUser.Id" asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary">Leave chat</a>
-                            }
-                        </div>
-
-                        <hr />
-                    }
-                    @*                    else
-            {
-            <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
-            }*@
-                </div>
 
 
             </div>
