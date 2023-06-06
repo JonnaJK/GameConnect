@@ -68,11 +68,11 @@
                 {
                     @if (Model.ReadBy.ContainsValue(message.Id))
                     {
-                        <span>Read by: </span>
                         foreach (var kvp in Model.ReadBy.Where(x => x.Value == message.Id))
                         {
                             <span>@kvp.Key </span>
                         }
+                        <span>Read by: </span>
                     }
                     @if (message.UserId == Model.LoggedInUser.Id)
                     {
