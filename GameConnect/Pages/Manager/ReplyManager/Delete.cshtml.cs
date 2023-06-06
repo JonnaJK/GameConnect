@@ -30,22 +30,27 @@ namespace GameConnect.Pages.Manager.ReplyManager
         [BindProperty]
         public Reply Reply { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id, Reply replyToDelete)
         {
-            if (id == null || _context.Reply == null)
+            if (id != 0)
             {
-                return NotFound();
+                var reply = await _replyService.GetReplyFromIdAsync(id);
+                if (reply != null)
+                {
+                    Reply = reply;
+                }
             }
-
-            var reply = await _context.Reply.FirstOrDefaultAsync(m => m.Id == id);
-
-            if (reply == null)
+            else if (replyToDelete != null && replyToDelete.Id != 0)
             {
-                return NotFound();
+                var reply = await _replyService.GetReplyFromIdAsync(replyToDelete.Id);
+                if (reply != null)
+                {
+                    Reply = reply;
+                }
             }
             else
             {
-                Reply = reply;
+                return NotFound();
             }
             return Page();
         }
@@ -57,16 +62,16 @@ namespace GameConnect.Pages.Manager.ReplyManager
                 return NotFound();
             }
             var reply = await _context.Reply.FindAsync(id);
-            reply.Replies = await _replyService.GetRepliesFromReplyIdAsync(reply.Id);
-
             if (reply != null)
             {
+                reply.Replies = await _replyService.GetRepliesFromReplyIdAsync(reply.Id);
+
                 Reply = reply;
                 foreach (var r in Reply.Replies)
                 {
                     if (!string.IsNullOrEmpty(r.ImageUrl))
                     {
-                        FileHelper.RemoveImage(r.ImageUrl);
+                        FileHelper.RemoveImage($"postImages/{r.ImageUrl}");
                     }
                     await _voteService.RemoveVotesOnReplyAsync(r);
 
@@ -74,7 +79,7 @@ namespace GameConnect.Pages.Manager.ReplyManager
                 }
                 if (!string.IsNullOrEmpty(Reply.ImageUrl))
                 {
-                    FileHelper.RemoveImage(Reply.ImageUrl);
+                    FileHelper.RemoveImage($"postImages/{Reply.ImageUrl}");
                 }
                 await _voteService.RemoveVotesOnReplyAsync(Reply);
 

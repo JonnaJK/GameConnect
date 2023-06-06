@@ -100,7 +100,7 @@ namespace GameConnect.Areas.Identity.Pages.Account.Manage
             {
                 if (resultUser.ImageUrl != null)
                 {
-                    FileHelper.RemoveImage(resultUser.ImageUrl);
+                    FileHelper.RemoveImage($"profilePictures/{resultUser.ImageUrl}");
                 }
                 var fileName = resultUser.UserName + UploadedImage.FileName;
                 await FileHelper.AddImage(UploadedImage, "profilePictures/" + fileName);

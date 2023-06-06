@@ -29,22 +29,27 @@ namespace GameConnect.Pages.Manager.PostManager
         [BindProperty]
         public Post Post { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int id, Post postToDelete)
         {
-            if (id == null || _context.Post == null)
+            if (id != 0)
             {
-                return NotFound();
+                var post = await _postService.GetPostAsync(id);
+                if (post != null)
+                {
+                    Post = post;
+                }
             }
-
-            var post = await _postService.GetPostAsync(id);
-
-            if (post == null)
+            else if (postToDelete != null && postToDelete.Id != 0)
             {
-                return NotFound();
+                var post = await _postService.GetPostAsync(postToDelete.Id);
+                if (post != null)
+                {
+                    Post = post;
+                }
             }
             else
             {
-                Post = post;
+                return NotFound();
             }
             return Page();
         }
@@ -62,7 +67,7 @@ namespace GameConnect.Pages.Manager.PostManager
                 Post = post;
                 if (Post.ImageUrl != "/postImages/defaultPost.jpg")
                 {
-                    FileHelper.RemoveImage(Post.ImageUrl);
+                    FileHelper.RemoveImage($"postImages/{Post.ImageUrl}");
                 }
                 if (Post.Replies != null)
                 {
@@ -74,7 +79,7 @@ namespace GameConnect.Pages.Manager.PostManager
                             {
                                 if (!string.IsNullOrEmpty(r.ImageUrl))
                                 {
-                                    FileHelper.RemoveImage(r.ImageUrl);
+                                    FileHelper.RemoveImage($"postImages/{r.ImageUrl}");
                                 }
                                 await _voteService.RemoveVotesOnReplyAsync(r);
                                 _context.Reply.Remove(r);
@@ -82,7 +87,7 @@ namespace GameConnect.Pages.Manager.PostManager
                         }
                         if (!string.IsNullOrEmpty(reply.ImageUrl))
                         {
-                            FileHelper.RemoveImage(reply.ImageUrl);
+                            FileHelper.RemoveImage($"postImages/{reply.ImageUrl}");
                         }
                         await _voteService.RemoveVotesOnReplyAsync(reply);
                         _context.Reply.Remove(reply);

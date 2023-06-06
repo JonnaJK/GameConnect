@@ -42,19 +42,7 @@ namespace GameConnect.Pages
             }
             if (deletePostId != 0)
             {
-                var post = await _postService.GetPostAsync(deletePostId);
-                if (post != null)
-                {
-                    if (post.Replies != null)
-                    {
-                        foreach (var reply in post.Replies)
-                        {
-                            _context.Reply.Remove(reply);
-                        }
-                        _context.Post.Remove(post);
-                        await _context.SaveChangesAsync();
-                    }
-                }
+                return RedirectToPage("/Manager/PostManager/Delete", new Post { Id = deletePostId });
             }
             if (restoreReplyId != 0)
             {
@@ -67,12 +55,13 @@ namespace GameConnect.Pages
             }
             if (deleteReplyId != 0)
             {
-                var reply = await _replyService.GetReplyFromIdAsync(deleteReplyId);
-                if (reply != null)
-                {
-                    _context.Reply.Remove(reply);
-                    await _context.SaveChangesAsync();
-                }
+                return RedirectToPage("/Manager/ReplyManager/Delete", new Reply { Id = deleteReplyId });
+                //var reply = await _replyService.GetReplyFromIdAsync(deleteReplyId);
+                //if (reply != null)
+                //{
+                //    _context.Reply.Remove(reply);
+                //    await _context.SaveChangesAsync();
+                //}
             }
             ReportedPosts = await _postService.GetReportedPostsAsync();
             ReportedReplies = await _replyService.GetReportedRepliesAsync();

@@ -29,7 +29,12 @@ public class ReplyService
 
     public async Task<Reply?> GetReplyFromIdAsync(int id)
     {
-        return await _context.Reply.FirstOrDefaultAsync(x => x.Id == id);
+        var reply = await _context.Reply.FirstOrDefaultAsync(x => x.Id == id);
+        if (reply == null)
+            return null;
+        reply.Replies ??= new List<Reply>();
+        reply.Replies = await GetRepliesFromReplyIdAsync(reply.Id);
+        return reply;
     }
 
     public async Task<List<Reply>> GetRepliesFromReplyIdAsync(int id)

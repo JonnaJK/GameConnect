@@ -141,7 +141,7 @@
                                         <a asp-route-downVoteReplyId="@r.Id" class="btn downvoteBtn">-</a>
                                     </div>
 
-                                    <a asp-route-replyId="@reply.Id" class="btn btn-primary postReplyBtn">Reply</a>
+                                    @*<a asp-route-replyId="@reply.Id" class="btn btn-primary postReplyBtn">Reply</a>*@
 
                                     @if (r.UserId != Model.LoggedInUser.Id)
                                     {
