@@ -81,9 +81,9 @@ namespace GameConnect.Domain.Services
             return unreadMessages.Where(x => x.IsRead == false).Count();
         }
 
-        public async Task<ChatMessageStatus?> GetStatusByMessageIdAsync(int chatMessageId)
+        public async Task<ChatMessageStatus?> GetStatusByMessageIdAsync(int chatMessageId, string userId)
         {
-            return await _context.ChatMessageStatus.FirstOrDefaultAsync(x => x.ChatMessageId == chatMessageId);
+            return await _context.ChatMessageStatus.FirstOrDefaultAsync(x => x.ChatMessageId == chatMessageId && x.RecipientId == userId);
         }
     }
 }

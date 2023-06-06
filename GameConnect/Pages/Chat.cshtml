@@ -66,6 +66,14 @@
 
                 @foreach (var message in Model.ChatMessages.OrderByDescending(x => x.Date))
                 {
+                    @if (Model.ReadBy.ContainsValue(message.Id))
+                    {
+                        foreach (var kvp in Model.ReadBy.Where(x => x.Value == message.Id))
+                        {
+                            <span>@kvp.Key </span>
+                        }
+                        <span>Read by: </span>
+                    }
                     @if (message.UserId == Model.LoggedInUser.Id)
                     {
                         <div class="messageWindow myMessage">
