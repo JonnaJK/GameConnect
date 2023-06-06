@@ -16,9 +16,9 @@ namespace GameConnect.Pages
         [BindProperty]
         public ChatMessage NewMessage { get; set; } = new();
         public List<ChatMessageStatus> UnreadMessages { get; set; } = new();
-        public List<Session> Sessions { get; set; } = new();
+        public List<Session>? Sessions { get; set; } = new();
         public List<ChatMessage> ChatMessages { get; set; } = new();
-        public User LoggedInUser { get; set; } = new();
+        public User? LoggedInUser { get; set; } = new();
         public bool ShowSettings { get; set; }
         public bool IsSessionCreator { get; set; }
         public bool IsNoMessagesToShow { get; set; }
@@ -63,14 +63,14 @@ namespace GameConnect.Pages
             if (sessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
-                SetReadByText();
+                await SetReadByText();
             }
             if (session != null)
             {
                 if (session.Id != 0)
                 {
                     ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(session.Id);
-                    SetReadByText();
+                    await SetReadByText();
                 }
             }
 
@@ -87,14 +87,17 @@ namespace GameConnect.Pages
             if (settingsSessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(settingsSessionId);
-                SetReadByText();
+                await SetReadByText();
 
                 ShowSettings = true;
                 var settingSession = await _sessionService.GetSessionAsync(settingsSessionId);
 
-                if (LoggedInUser.Id == settingSession.CreatorId)
+                if (LoggedInUser != null)
                 {
-                    IsSessionCreator = true;
+                    if (LoggedInUser.Id == settingSession.CreatorId)
+                    {
+                        IsSessionCreator = true;
+                    }
                 }
             }
             if (closeSettings)
@@ -133,14 +136,12 @@ namespace GameConnect.Pages
 
             await _chatMessageService.CreateChatMessageAsync(NewMessage, User);
 
-            var session = new Session { Id = NewMessage.SessionId };
-
-            return RedirectToPage("/Chat", session);
+            return RedirectToPage("/Chat", new Session { Id = NewMessage.SessionId });
         }
 
         private async Task<List<ChatMessageStatus>> GetUsersUnreadMessages()
         {
-            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser);
+            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser ?? new User { Id = string.Empty});
         }
 
         private void SortSessionsByUnreadMessages()
@@ -148,18 +149,23 @@ namespace GameConnect.Pages
             var unreadMessagesInSession = new List<Session>();
             var readMessagesInSession = new List<Session>();
             UnreadMessageInSessionId = new List<int>();
-
-            foreach (var session in Sessions)
+            if (Sessions != null)
             {
-                foreach (var unReadMessage in UnreadMessages)
+                foreach (var session in Sessions)
                 {
-                    if (session.Id == unReadMessage.Session.Id)
+                    foreach (var unReadMessage in UnreadMessages)
                     {
-                        unreadMessagesInSession.Add(session);
-                        UnreadMessageInSessionId.Add(session.Id);
+                        if (unReadMessage.Session != null)
+                        {
+                            if (session.Id == unReadMessage.Session.Id)
+                            {
+                                unreadMessagesInSession.Add(session);
+                                UnreadMessageInSessionId.Add(session.Id);
+                            }
+                        }
                     }
+                    readMessagesInSession.Add(session);
                 }
-                readMessagesInSession.Add(session);
             }
             //Sessions = new List<Session>();
             //Sessions.AddRange(unreadMessagesInSession);
@@ -168,6 +174,9 @@ namespace GameConnect.Pages
 
         private async Task SetReadByText()
         {
+            if (LoggedInUser == null)
+                return;
+
             var lastMessage = ChatMessages.Last(x => x.UserId == LoggedInUser.Id);
             if (lastMessage.Recipients != null)
             {

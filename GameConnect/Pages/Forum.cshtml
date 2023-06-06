@@ -43,10 +43,13 @@
                         <img class="postImg" src="/images/postImages/@post.ImageUrl">
                         @if (post.User != null)
                         {
-                            <div class="postTitle">@post.Title | Posted by:  <a asp-route-creatorUser="@post.UserId">@post.User.UserName</a></div>
+                            <div class="postTitle">@post.Title.CensorWords(Model.BannedWords) | Posted by:  <a asp-route-creatorUser="@post.UserId">@post.User.UserName</a></div>
                         }
                         <div class="postText">
-                           @post.Text.CensorWords(Model.BannedWords)
+                            @if (!string.IsNullOrEmpty(post.Text))
+                            {
+                                @post.Text.CensorWords(Model.BannedWords)
+                            }
                         </div>
                         <div class="postTags">
                             @if (post.Category != null && post.Tag != null)

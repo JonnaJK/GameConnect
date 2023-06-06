@@ -6,9 +6,13 @@ namespace GameConnect.Helpers
 {
     public static class BannedWordHelper
     {
-        public static string CensorWords(this string text, List<BannedWord> bannedWords)
+        public static string CensorWords(this string text, List<BannedWord>? bannedWords)
         {
             string result = text;
+
+            if(bannedWords == null)
+                return result;
+
             foreach (var word in bannedWords)
             {
                 if (result.Contains(word.Title))

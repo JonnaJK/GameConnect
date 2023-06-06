@@ -26,6 +26,9 @@ namespace GameConnect.Domain.Services
         public async Task AddMessageAsync(int sessionId, int messageId, ICollection<User> recipients, ClaimsPrincipal currentUser)
         {
             var loggedInUser = await _userService.GetUserAsync(currentUser);
+            if (loggedInUser == null)
+                return;
+
             foreach (var recipient in recipients.Where(x => x.Id != loggedInUser.Id))
             {
                 ChatMessageStatus message = new ChatMessageStatus()

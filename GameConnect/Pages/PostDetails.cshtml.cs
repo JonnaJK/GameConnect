@@ -17,9 +17,10 @@ namespace GameConnect.Pages
         private readonly VoteService _voteService;
         private readonly SignInManager<User> _signInManager;
 
-        public Post Post { get; set; } = new();
+        public Post? Post { get; set; } = new();
         public User LoggedInUser { get; set; } = new();
         public bool IsSameUser { get; set; }
+        public List<BannedWord> BannedWords { get; set; } = new();
 
         public PostDetailsModel(PostService postService, UserService userService, ApplicationDbContext context, ReplyService replyService, VoteService voteService, SignInManager<User> signInManager)
         {
@@ -30,8 +31,9 @@ namespace GameConnect.Pages
             _voteService = voteService;
             _signInManager = signInManager;
         }
-        public async Task<IActionResult> OnGetAsync(Post post, int upVotePostId, int downVotePostId, int upVoteReplyId, int downVoteReplyId, int postId, int replyId, string creatorUser, int reportedPostId, int reportedReplyId)
+        public async Task<IActionResult> OnGetAsync(Post? post, int upVotePostId, int downVotePostId, int upVoteReplyId, int downVoteReplyId, int postId, int replyId, string creatorUser, int reportedPostId, int reportedReplyId)
         {
+            BannedWords = await _context.BannedWord.ToListAsync();
             if (!_signInManager.IsSignedIn(User))
                 return Page();
 
@@ -53,7 +55,8 @@ namespace GameConnect.Pages
             if (!string.IsNullOrEmpty(creatorUser))
             {
                 var user = await _userService.GetUserAsync(creatorUser);
-                return RedirectToPage("/UserHome", user);
+                if (user != null)
+                    return RedirectToPage("/UserHome", new User { UserName = user.UserName });
             }
 
             // Upvote or downvote a post
@@ -104,27 +107,37 @@ namespace GameConnect.Pages
             if (reportedPostId != 0)
             {
                 post = await _postService.GetPostAsync(reportedPostId);
-                post.IsReported = true;
-                await _context.SaveChangesAsync();
+                if (post != null)
+                {
+                    post.IsReported = true;
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToPage("/Forum");
             }
             else if (reportedReplyId != 0)
             {
                 var reportedReply = await _replyService.GetReplyFromIdAsync(reportedReplyId);
-                post = await _postService.GetPostAsync(reportedReply.PostId);
-                reportedReply.IsReported = true;
-                await _context.SaveChangesAsync();
+                if (reportedReply != null)
+                {
+                    post = await _postService.GetPostAsync(reportedReply.PostId);
+                    reportedReply.IsReported = true;
+                    await _context.SaveChangesAsync();
+                }
                 return RedirectToPage("/Forum");
             }
 
-            post = await _postService.GetPostAsync(post.Id);
-            var postUser = await _userService.GetUserAsync(post.UserId);
-            if (postUser.Id == LoggedInUser.Id)
+            post = await _postService.GetPostAsync((post != null ? post.Id : 0));
+            if (post != null)
             {
-                IsSameUser = true;
-            }
 
-            Post = await _postService.GetPostAsync(post.Id);
+                var postUser = await _userService.GetUserAsync(post.UserId);
+                if (postUser != null && postUser.Id == LoggedInUser.Id)
+                {
+                    IsSameUser = true;
+                }
+
+                Post = await _postService.GetPostAsync(post.Id);
+            }
             return Page();
         }
     }

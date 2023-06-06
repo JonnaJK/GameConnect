@@ -27,8 +27,8 @@ namespace GameConnect.Pages.Manager.BannedWordManager
             }
             else
             {
-                _context.BannedWord.Add(NewBannedWord);
-                _context.SaveChanges();
+                await _context.BannedWord.AddAsync(NewBannedWord);
+                await _context.SaveChangesAsync();
                 return RedirectToPage("./Index");
             }
         }

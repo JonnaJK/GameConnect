@@ -24,7 +24,7 @@ public class ForumModel : PageModel
     public string? TagAndCategoryNames { get; set; }
     public List<Post>? AllPosts { get; set; }
     public List<Tag> AllTags { get; set; } = new List<Tag>();
-    public List<BannedWord> BannedWords { get; set; }
+    public List<BannedWord>? BannedWords { get; set; }
 
     public ForumModel(PostService postService, VoteService voteService, UserService userService, HttpService httpService, ApplicationDbContext context)
     {

@@ -2,6 +2,7 @@
 
 @using GameConnect.Domain.Entities;
 @using GameConnect.Domain.Services;
+@using Helpers;
 
 @inject UserService UserService;
 
@@ -20,7 +21,7 @@
 @if (!string.IsNullOrEmpty(Model.SendMessageText))
 {
     <div>
-        <span><strong>Reply on post:</strong> @Model.SendMessageText</span>
+        <span><strong>Reply on post:</strong> @Model.SendMessageText.CensorWords(Model.BannedWords)</span>
     </div>
 }
 

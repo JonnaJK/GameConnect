@@ -27,6 +27,7 @@ namespace GameConnect.Pages.Manager.SessionManager
         public ChatMessage NewMessage { get; set; }
         [BindProperty]
         public List<string> RecipientsId { get; set; }
+        public List<BannedWord> BannedWords { get; set; }
         public string RecipientId { get; set; }
         public string? SendMessageText { get; set; }
 
@@ -41,6 +42,7 @@ namespace GameConnect.Pages.Manager.SessionManager
         public async Task<IActionResult> OnGetAsync(string recipientId, string postText)
         {
             LoggedInUser = await _userService.GetUserAsync(User);
+            BannedWords = await _context.BannedWord.ToListAsync();
 
             if (!string.IsNullOrEmpty(recipientId))
             {

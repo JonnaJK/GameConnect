@@ -21,9 +21,9 @@ namespace GameConnect.Pages.Manager.SessionManager
         [BindProperty]
         public Session Session { get; set; } = default!;
         [BindProperty]
-        public List<string> AddRecipientIds { get; set; }
+        public List<string> AddRecipientIds { get; set; } = new();
         [BindProperty]
-        public List<string> RemoveRecipientIds { get; set; }
+        public List<string> RemoveRecipientIds { get; set; } = new();
         public bool IsAdding { get; set; }
         public bool IsRemoving { get; set; }
 
@@ -34,9 +34,9 @@ namespace GameConnect.Pages.Manager.SessionManager
             _sessionService = sessionService;
         }
 
-        public async Task<IActionResult> OnGetAsync(Session session, int id, int editId)
+        public async Task<IActionResult> OnGetAsync(Session? session, int id, int editId)
         {
-            if (session.Id == null && id == null)
+            if (session != null && session.Id == 0 && id == 0)
             {
                 return NotFound();
             }
@@ -47,7 +47,7 @@ namespace GameConnect.Pages.Manager.SessionManager
             }
             else
             {
-                session = await _context.Session.Include(x => x.Participants).FirstOrDefaultAsync(m => m.Id == session.Id);
+                session = await _context.Session.Include(x => x.Participants).FirstOrDefaultAsync(m => m.Id == (session != null ? session.Id : 0));
             }
 
             if (editId == 1)
