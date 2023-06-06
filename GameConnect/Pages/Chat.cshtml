@@ -60,7 +60,8 @@
                     <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now" />
                     <input type="hidden" asp-for="NewMessage.SessionId" value="@Model.ChatMessages[0].SessionId" />
                     <textarea asp-for="NewMessage.Message" placeholder="New message" maxlength="200"></textarea>
-                    <button type="submit" class="btn btn-primary">Send message</button>
+                    <button type="submit" class="btn btn-success">Send</button>
+                    <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-secondary settingsBtn">Settings</a>
                 </form>
 
                 @foreach (var message in Model.ChatMessages.OrderByDescending(x => x.Date))
@@ -113,10 +114,10 @@
 
                         <hr />
                     }
-                    else
+@*                    else
                     {
                         <a asp-route-settingsSessionId="@Model.ChatMessages[0].SessionId" class="btn btn-primary settingsBtn">Chat Settings</a>
-                    }
+                    }*@
                 </div>
 
 

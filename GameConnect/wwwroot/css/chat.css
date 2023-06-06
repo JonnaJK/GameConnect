@@ -73,9 +73,9 @@ h1 {
 }
 
 .settingsBtn {
-    position: relative;
+/*    position: relative;
     top: 0;
-    margin: 5px;
+    margin: 5px;*/
     width: fit-content;
 }
 

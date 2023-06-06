@@ -64,7 +64,7 @@
                     <abbr title="This post has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported post*</abbr>
                 }
             </div>
-            <a asp-route-reportedPostId="@Model.Post.Id" class="btn btn-dark reportBtn">Report post</a>
+            <a asp-route-reportedPostId="@Model.Post.Id" class="btn btn-secondary reportBtn">Report post</a>
 
             @if (Model.Post.Replies != null)
             {
@@ -105,7 +105,7 @@
                             }
                         </div>
 
-                        <a asp-route-reportedReplyId="@reply.Id" class="btn btn-dark reportBtn">Report reply</a>
+                        <a asp-route-reportedReplyId="@reply.Id" class="btn btn-secondary reportBtn">Report reply</a>
                     }
                     @if (reply.Replies != null)
                     {
@@ -156,7 +156,7 @@
                                         <abbr title="This reply has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported reply*</abbr>
                                     }
                                 </div>
-                                <a asp-route-reportedReplyId="@r.Id" class="btn btn-dark reportBtn">Report reply</a>
+                                <a asp-route-reportedReplyId="@r.Id" class="btn btn-secondary reportBtn">Report reply</a>
                             }
                         }
                     }

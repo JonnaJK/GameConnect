@@ -63,14 +63,14 @@ namespace GameConnect.Pages
             if (sessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
-                await SetReadByText();
+                //await SetReadByText();
             }
             if (session != null)
             {
                 if (session.Id != 0)
                 {
                     ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(session.Id);
-                    await SetReadByText();
+                    //await SetReadByText();
                 }
             }
 
@@ -87,7 +87,7 @@ namespace GameConnect.Pages
             if (settingsSessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(settingsSessionId);
-                await SetReadByText();
+                //await SetReadByText();
 
                 ShowSettings = true;
                 var settingSession = await _sessionService.GetSessionAsync(settingsSessionId);
@@ -134,14 +134,17 @@ namespace GameConnect.Pages
                 Sessions = await _sessionService.GetSessionsFromUserIdAsync(LoggedInUser);
             }
 
-            await _chatMessageService.CreateChatMessageAsync(NewMessage, User);
+            if (!string.IsNullOrEmpty(NewMessage.Message))
+            {
+                await _chatMessageService.CreateChatMessageAsync(NewMessage, User);
+            }
 
             return RedirectToPage("/Chat", new Session { Id = NewMessage.SessionId });
         }
 
         private async Task<List<ChatMessageStatus>> GetUsersUnreadMessages()
         {
-            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser ?? new User { Id = string.Empty});
+            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser ?? new User { Id = string.Empty });
         }
 
         private void SortSessionsByUnreadMessages()

@@ -40,6 +40,7 @@
                 @foreach (var post in Model.AllPosts)
                 {
                     <div class="post">
+                        <a asp-route-postId="@post.Id"></a>
                         <img class="postImg" src="/images/postImages/@post.ImageUrl">
                         @if (post.User != null)
                         {
@@ -93,7 +94,7 @@
             }
         </div>
         <div id="rightDiv">
-            <a class="btn btn-primary" asp-page="/Manager/PostManager/Create">New post</a>
+            <a class="btn btn-primary newPostBtn" asp-page="/Manager/PostManager/Create">New post</a>
         </div>
     </div>
 }
