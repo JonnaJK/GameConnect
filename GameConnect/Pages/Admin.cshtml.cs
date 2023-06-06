@@ -17,8 +17,8 @@ namespace GameConnect.Pages
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserService _userService;
         private readonly ReplyService _replyService;
-        public List<Post> ReportedPosts { get; set; }
-        public List<Reply> ReportedReplies { get; set; }
+        public List<Post> ReportedPosts { get; set; } = new();
+        public List<Reply> ReportedReplies { get; set; } = new();
 
         public AdminModel(ApplicationDbContext context, PostService postService, RoleManager<IdentityRole> roleManager, UserService userService, ReplyService replyService)
         {
@@ -31,7 +31,6 @@ namespace GameConnect.Pages
 
         public async Task<IActionResult> OnGetAsync(int restorePostId, int deletePostId, int restoreReplyId, int deleteReplyId)
         {
-
             if (restorePostId != 0)
             {
                 var post = await _postService.GetPostAsync(restorePostId);
@@ -75,10 +74,8 @@ namespace GameConnect.Pages
                     await _context.SaveChangesAsync();
                 }
             }
-
             ReportedPosts = await _postService.GetReportedPostsAsync();
             ReportedReplies = await _replyService.GetReportedRepliesAsync();
-
             return Page();
         }
 

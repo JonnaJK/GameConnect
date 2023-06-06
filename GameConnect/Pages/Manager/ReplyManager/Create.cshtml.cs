@@ -17,8 +17,9 @@ namespace GameConnect.Pages.Manager.ReplyManager
         private readonly ApplicationDbContext _context;
         private readonly UserService _userService;
         private readonly PostService _postService;
+        private readonly ReplyService _replyService;
 
-        public User LoggedInUser { get; set; }
+        public User LoggedInUser { get; set; } = new();
 
         public int PostId { get; set; }
         public int? ReplyId { get; set; }
@@ -28,12 +29,15 @@ namespace GameConnect.Pages.Manager.ReplyManager
 
         [BindProperty]
         public IFormFile UploadedImage { get; set; }
+        public Post ReplyOnPost { get; set; } = new();
+        public Reply ReplyOnReply { get; set; } = new();
 
-        public CreateModel(ApplicationDbContext context, UserService userService, PostService postService)
+        public CreateModel(ApplicationDbContext context, UserService userService, PostService postService, ReplyService replyService)
         {
             _context = context;
             _userService = userService;
             _postService = postService;
+            _replyService = replyService;
         }
 
         public async Task<IActionResult> OnGetAsync(Post post, Reply reply)
@@ -43,11 +47,13 @@ namespace GameConnect.Pages.Manager.ReplyManager
             {
                 ReplyId = reply.Id;
                 PostId = reply.PostId;
+                ReplyOnReply = await _replyService.GetReplyFromIdAsync(reply.Id);
             }
             else if (reply.PostId == 0)
             {
                 PostId = post.Id;
                 ReplyId = null;
+                ReplyOnPost = await _postService.GetPostAsync(post.Id);
             }
             return Page();
         }

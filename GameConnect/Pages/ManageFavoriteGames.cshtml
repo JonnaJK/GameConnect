@@ -9,8 +9,11 @@
 {
     <br />
     <form method="post">
-        <label asp-for="@Model.FavoriteGame.Name">Add a favorite game</label>
-        <input asp-for="@Model.FavoriteGame.Name" class="form-control" />
+        @if (Model.FavoriteGame != null)
+        {
+            <label asp-for="@Model.FavoriteGame.Name">Add a favorite game</label>
+            <input asp-for="@Model.FavoriteGame.Name" class="form-control" />
+        }
         <br />
         <button class="btn btn-primary" type="submit">Add game</button>
         <br />
@@ -18,14 +21,17 @@
 
     <div>
         <h3>Your favorite games:</h3>
-        @if (Model.CurrentUser.FavoriteGames != null)
+        @if (Model.CurrentUser != null)
         {
-            <ul>
-                @foreach (var game in Model.CurrentUser.FavoriteGames)
-                {
-                    <li>@game.Name | <a asp-route-removeId="@game.Id">Remove</a></li>
-                }
-            </ul>
+            @if (Model.CurrentUser.FavoriteGames != null)
+            {
+                <ul>
+                    @foreach (var game in Model.CurrentUser.FavoriteGames)
+                    {
+                        <li>@game.Name | <a asp-route-removeId="@game.Id">Remove</a></li>
+                    }
+                </ul>
+            }
         }
     </div>
 }

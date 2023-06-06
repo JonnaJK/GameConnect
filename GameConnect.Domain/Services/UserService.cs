@@ -26,6 +26,10 @@ namespace GameConnect.Domain.Services
             var user = await _userManager.GetUserAsync(identityUser);
             if (user == null)
                 return null;
+            if (user.Posts != null)
+            {
+                user.Posts = await _postService.SetPostsAsync(user.Posts);
+            }
             user.FavoriteGames = await _favoriteGameService.GetUsersFavoriteGamesAsync(user);
             return user;
         }

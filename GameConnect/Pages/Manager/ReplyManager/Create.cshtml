@@ -9,6 +9,16 @@
 
 <h4>Reply</h4>
 <hr />
+<div>
+    @if (Model.ReplyOnPost.Id != 0)
+    {
+        <label>Replying to post: @Model.ReplyOnPost.Text</label>
+    }
+    else if (Model.ReplyOnReply.Id != 0)
+    {
+        <label>Replying on reply: @Model.ReplyOnReply.Text</label>
+    }
+</div>
 <div class="row">
     <div class="col-md-4">
         <form method="post" enctype="multipart/form-data">

@@ -17,8 +17,8 @@ namespace GameConnect.Pages
         private readonly VoteService _voteService;
         private readonly SignInManager<User> _signInManager;
 
-        public Post Post { get; set; }
-        public User LoggedInUser { get; set; }
+        public Post Post { get; set; } = new();
+        public User LoggedInUser { get; set; } = new();
         public bool IsSameUser { get; set; }
 
         public PostDetailsModel(PostService postService, UserService userService, ApplicationDbContext context, ReplyService replyService, VoteService voteService, SignInManager<User> signInManager)
@@ -34,23 +34,29 @@ namespace GameConnect.Pages
         {
             if (!_signInManager.IsSignedIn(User))
                 return Page();
-            LoggedInUser = await _userService.GetUserAsync(User);
+
+            // Reply on post or reply on reply
             if (postId != 0)
             {
                 post = await _postService.GetPostAsync(postId);
-                return RedirectToPage("/Manager/ReplyManager/Create", post);
+                if (post != null)
+                    return RedirectToPage("/Manager/ReplyManager/Create", new Post { Id = post.Id });
             }
-            if (replyId != 0)
+            else if (replyId != 0)
             {
                 var reply = await _replyService.GetReplyFromIdAsync(replyId);
-                return RedirectToPage("/Manager/ReplyManager/Create", reply);
+                if (reply != null)
+                    return RedirectToPage("/Manager/ReplyManager/Create", new Reply { Id = reply.Id, PostId = reply.PostId });
             }
+
+            // Go to a users page
             if (!string.IsNullOrEmpty(creatorUser))
             {
                 var user = await _userService.GetUserAsync(creatorUser);
                 return RedirectToPage("/UserHome", user);
             }
 
+            // Upvote or downvote a post
             if (upVotePostId != 0)
             {
                 var isChanged = await _voteService.AddUpVoteOnPostAsync(LoggedInUser.Id, upVotePostId);
@@ -59,7 +65,7 @@ namespace GameConnect.Pages
 
                 post = await _postService.GetPostAsync(upVotePostId);
             }
-            if (downVotePostId != 0)
+            else if (downVotePostId != 0)
             {
                 var isChanged = await _voteService.AddDownVoteOnPostAsync(LoggedInUser.Id, downVotePostId);
                 if (isChanged)
@@ -68,6 +74,7 @@ namespace GameConnect.Pages
                 post = await _postService.GetPostAsync(downVotePostId);
             }
 
+            // Upvote och downvote a reply
             if (upVoteReplyId != 0)
             {
                 var reply = await _replyService.GetReplyFromIdAsync(upVoteReplyId);
@@ -80,7 +87,7 @@ namespace GameConnect.Pages
                     post = await _postService.GetPostAsync(reply.PostId);
                 }
             }
-            if (downVoteReplyId != 0)
+            else if (downVoteReplyId != 0)
             {
                 var reply = await _replyService.GetReplyFromIdAsync(downVoteReplyId);
                 if (reply != null)
@@ -93,6 +100,7 @@ namespace GameConnect.Pages
                 }
             }
 
+            // Repost a post or a reply
             if (reportedPostId != 0)
             {
                 post = await _postService.GetPostAsync(reportedPostId);
@@ -100,7 +108,7 @@ namespace GameConnect.Pages
                 await _context.SaveChangesAsync();
                 return RedirectToPage("/Forum");
             }
-            if (reportedReplyId != 0)
+            else if (reportedReplyId != 0)
             {
                 var reportedReply = await _replyService.GetReplyFromIdAsync(reportedReplyId);
                 post = await _postService.GetPostAsync(reportedReply.PostId);
@@ -108,6 +116,7 @@ namespace GameConnect.Pages
                 await _context.SaveChangesAsync();
                 return RedirectToPage("/Forum");
             }
+
             post = await _postService.GetPostAsync(post.Id);
             var postUser = await _userService.GetUserAsync(post.UserId);
             if (postUser.Id == LoggedInUser.Id)
