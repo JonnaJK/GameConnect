@@ -57,7 +57,7 @@
             <div class="chatWindow">
                 <form method="post">
                     <input type="hidden" asp-for="NewMessage.UserId" value="@Model.LoggedInUser.Id" />
-                    <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now" />
+                    <input type="hidden" asp-for="NewMessage.Date" value="@DateTime.Now.ToLocalTime()" />
                     <input type="hidden" asp-for="NewMessage.SessionId" value="@Model.ChatMessages[0].SessionId" />
                     <textarea asp-for="NewMessage.Message" placeholder="New message" maxlength="200"></textarea>
                     <button type="submit" class="btn btn-success">Send</button>
