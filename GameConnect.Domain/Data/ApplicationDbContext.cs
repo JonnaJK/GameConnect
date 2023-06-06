@@ -20,5 +20,6 @@ namespace GameConnect.Domain.Data
         public DbSet<ChatMessageStatus> ChatMessageStatus { get; set; } = default!;
         public DbSet<Session> Session { get; set; } = default!;
         public DbSet<Vote> Vote { get; set; } = default!;
+        public DbSet<BannedWord> BannedWord { get; set; } = default!;
     }
 }

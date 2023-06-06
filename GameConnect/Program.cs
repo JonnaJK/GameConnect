@@ -38,6 +38,7 @@ public class Program
             options.Conventions.AuthorizePage("/Manager/PostManager/Index", "Admin");
             options.Conventions.AuthorizePage("/Manager/ReplyManager/Index", "Admin");
             options.Conventions.AuthorizePage("/Manager/SessionManager/Index", "Admin");
+            options.Conventions.AuthorizePage("/Manager/BannedWordManager", "Admin");
         });
 
         // Dependency Injections

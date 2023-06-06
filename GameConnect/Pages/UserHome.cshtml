@@ -1,5 +1,6 @@
 ﻿@page
 @using GameConnect.Domain.Entities;
+@using Helpers;
 @inject SignInManager<User> SignInManager
 @model UserHomeModel
 @{
@@ -68,9 +69,14 @@
                                 <img class="postImg" src="/images/postImages/@post.ImageUrl">
                                 @if (post.User != null)
                                 {
-                                    <span class="postTitle">@post.Title | @post.User.UserName</span>
+                                    <span class="postTitle">@post.Title.CensorWords(Model.BannedWords) | @post.User.UserName</span>
                                 }
-                                <span class="postText">@post.Text</span>
+                                <span class="postText">
+                                    @if (!string.IsNullOrEmpty(post.Text))
+                                    {
+                                        @post.Text.CensorWords(Model.BannedWords)
+                                    }
+                                </span>
                                 <span class="postTags">
                                     @if (post.Category != null && post.Tag != null)
                                     {
