@@ -23,7 +23,7 @@ namespace GameConnect.Pages
         public bool IsSessionCreator { get; set; }
         public bool IsNoMessagesToShow { get; set; }
         public List<int> UnreadMessageInSessionId { get; set; } = new();
-        public List<string> ReadBy { get; set; } = new();
+        public Dictionary<string, int> ReadBy { get; set; } = new();
 
 
         public ChatModel(UserService userService, SessionService sessionService, ChatMessageService chatMessageService, ChatMessageStatusService chatMessageStatusService)
@@ -141,7 +141,7 @@ namespace GameConnect.Pages
 
         private async Task<List<ChatMessageStatus>> GetUsersUnreadMessages()
         {
-            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser ?? new User { Id = string.Empty});
+            return await _chatMessageStatusService.GetUsersUnreadMessages(LoggedInUser ?? new User { Id = string.Empty });
         }
 
         private void SortSessionsByUnreadMessages()
@@ -177,20 +177,38 @@ namespace GameConnect.Pages
             if (LoggedInUser == null)
                 return;
 
-            var lastMessage = ChatMessages.Last(x => x.UserId == LoggedInUser.Id);
-            if (lastMessage.Recipients != null)
+            ChatMessages = ChatMessages.OrderBy(x => x.Date).Reverse().ToList();
+            var session = await _sessionService.GetSessionAsync(ChatMessages.First().SessionId);
+            if (session.Participants == null)
+                return;
+            foreach (var recipient in session.Participants.Where(x => x.Id != LoggedInUser.Id))
             {
-                foreach (var recipient in lastMessage.Recipients)
+                foreach (var message in ChatMessages.Where(x => x.UserId == LoggedInUser.Id))
                 {
-                    var status = await _chatMessageStatusService.GetStatusByMessageIdAsync(lastMessage.Id);
+                    var status = await _chatMessageStatusService.GetStatusByMessageIdAsync(message.Id, recipient.Id);
                     if (status == null)
                         continue;
                     if (status.IsRead)
                     {
-                        ReadBy.Add(recipient.UserName ?? string.Empty);
+                        ReadBy.Add(recipient.UserName ?? string.Empty, message.Id);
+                        break;
                     }
                 }
             }
+            //var lastMessage = ChatMessages.Last(x => x.UserId == LoggedInUser.Id);
+            //if (lastMessage.Recipients != null)
+            //{
+            //    foreach (var recipient in lastMessage.Recipients)
+            //    {
+            //        var status = await _chatMessageStatusService.GetStatusByMessageIdAsync(lastMessage.Id);
+            //        if (status == null)
+            //            continue;
+            //        if (status.IsRead)
+            //        {
+            //            ReadBy.Add(recipient.UserName ?? string.Empty);
+            //        }
+            //    }
+            //}
         }
     }
 }
