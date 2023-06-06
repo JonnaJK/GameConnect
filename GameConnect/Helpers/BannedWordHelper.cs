@@ -15,16 +15,17 @@ namespace GameConnect.Helpers
 
             foreach (var word in bannedWords)
             {
-                if (result.Contains(word.Title))
+                if (result.ToLower().Contains(word.Title.ToLower()))
                 {
                     string pattern = $@"\b{word.Title}\b";
+
                     string replace = @"";
                     for (int i = 0; i < word.Title.Length; i++)
                     {
                         replace += "*";
                     }
 
-                    RegexOptions options = RegexOptions.Multiline | RegexOptions.IgnoreCase;
+                    RegexOptions options = RegexOptions.IgnoreCase;
                     Regex regex = new Regex(pattern, options);
                     result = regex.Replace(result, replace);
                 }

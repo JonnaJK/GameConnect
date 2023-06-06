@@ -57,14 +57,14 @@
                 }
                 else
                 {
-                    <a asp-page="/Manager/PostManager/Delete" asp-route-id="@Model.Post.Id" class="btn btn-primary messageBtn">Delete post</a>
+                    <a asp-page="/Manager/PostManager/Delete" asp-route-id="@Model.Post.Id" class="btn btn-danger messageBtn">Delete post</a>
                 }
                 @if (Model.Post.IsReported == true)
                 {
                     <abbr title="This post has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported post*</abbr>
                 }
             </div>
-            <a asp-route-reportedPostId="@Model.Post.Id" class="btn btn-primary reportBtn">Report post</a>
+            <a asp-route-reportedPostId="@Model.Post.Id" class="btn btn-dark reportBtn">Report post</a>
 
             @if (Model.Post.Replies != null)
             {
@@ -96,7 +96,7 @@
                             }
                             else
                             {
-                                <a asp-page="/Manager/ReplyManager/Delete" asp-route-id="@reply.Id" class="btn btn-primary messageBtn">Delete reply</a>
+                                <a asp-page="/Manager/ReplyManager/Delete" asp-route-id="@reply.Id" class="btn btn-danger messageBtn">Delete reply</a>
                             }
 
                             @if (reply.IsReported == true)
@@ -105,7 +105,7 @@
                             }
                         </div>
 
-                        <a asp-route-reportedReplyId="@reply.Id" class="btn btn-primary reportBtn">Report reply</a>
+                        <a asp-route-reportedReplyId="@reply.Id" class="btn btn-dark reportBtn">Report reply</a>
                     }
                     @if (reply.Replies != null)
                     {
@@ -149,14 +149,14 @@
                                     }
                                     else
                                     {
-                                        <a asp-page="/Manager/ReplyManager/Delete" asp-route-id="@r.Id" class="btn btn-primary messageBtn">Delete reply</a>
+                                        <a asp-page="/Manager/ReplyManager/Delete" asp-route-id="@r.Id" class="btn btn-danger messageBtn">Delete reply</a>
                                     }
                                     @if (r.IsReported == true)
                                     {
                                         <abbr title="This reply has been reported and if deemed inapropriate by our moderator, will be deleted.">Reported reply*</abbr>
                                     }
                                 </div>
-                                <a asp-route-reportedReplyId="@r.Id" class="btn btn-primary reportBtn">Report reply</a>
+                                <a asp-route-reportedReplyId="@r.Id" class="btn btn-dark reportBtn">Report reply</a>
                             }
                         }
                     }

@@ -110,10 +110,7 @@
 .detailsBtn, .messageBtn {
     grid-column: 4;
     grid-row: 3;
-   /* margin-left: 20px;*/
     justify-self: end; 
-/*tog bort align-self: end; !!! */
-    background-color: #55868C;
     border: none;
     border-radius: 8px;
 }
@@ -125,14 +122,14 @@
     margin-right: 10px;
 }
 
-.postUsername { /*ny !!!!*/
+.postUsername { 
     grid-column: 4;
     grid-row: 1;
     justify-self: end;
     margin-right: 10px;
 }
 
-.postReplyBtn { /*ny !!!!*/
+.postReplyBtn { 
     grid-column: 4;
     grid-row: 2;
     justify-self: end;

@@ -33,10 +33,11 @@ namespace GameConnect.Pages
         }
         public async Task<IActionResult> OnGetAsync(Post? post, int upVotePostId, int downVotePostId, int upVoteReplyId, int downVoteReplyId, int postId, int replyId, string creatorUser, int reportedPostId, int reportedReplyId)
         {
-            BannedWords = await _context.BannedWord.ToListAsync();
             if (!_signInManager.IsSignedIn(User))
                 return Page();
 
+            BannedWords = await _context.BannedWord.ToListAsync();
+            LoggedInUser = await _userService.GetUserAsync(User);
             // Reply on post or reply on reply
             if (postId != 0)
             {
