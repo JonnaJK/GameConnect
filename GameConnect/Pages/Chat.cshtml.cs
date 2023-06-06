@@ -23,6 +23,7 @@ namespace GameConnect.Pages
         public bool IsSessionCreator { get; set; }
         public bool IsNoMessagesToShow { get; set; }
         public List<int> UnreadMessageInSessionId { get; set; } = new();
+        public List<string> ReadBy { get; set; } = new();
 
 
         public ChatModel(UserService userService, SessionService sessionService, ChatMessageService chatMessageService, ChatMessageStatusService chatMessageStatusService)
@@ -62,12 +63,14 @@ namespace GameConnect.Pages
             if (sessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
+                SetReadByText();
             }
             if (session != null)
             {
                 if (session.Id != 0)
                 {
                     ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(session.Id);
+                    SetReadByText();
                 }
             }
 
@@ -84,6 +87,7 @@ namespace GameConnect.Pages
             if (settingsSessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(settingsSessionId);
+                SetReadByText();
 
                 ShowSettings = true;
                 var settingSession = await _sessionService.GetSessionAsync(settingsSessionId);
@@ -160,6 +164,24 @@ namespace GameConnect.Pages
             //Sessions = new List<Session>();
             //Sessions.AddRange(unreadMessagesInSession);
             //Sessions.AddRange(readMessagesInSession);
+        }
+
+        private async Task SetReadByText()
+        {
+            var lastMessage = ChatMessages.Last(x => x.UserId == LoggedInUser.Id);
+            if (lastMessage.Recipients != null)
+            {
+                foreach (var recipient in lastMessage.Recipients)
+                {
+                    var status = await _chatMessageStatusService.GetStatusByMessageIdAsync(lastMessage.Id);
+                    if (status == null)
+                        continue;
+                    if (status.IsRead)
+                    {
+                        ReadBy.Add(recipient.UserName ?? string.Empty);
+                    }
+                }
+            }
         }
     }
 }
