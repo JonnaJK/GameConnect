@@ -15,7 +15,7 @@ namespace GameConnect.Pages
         private readonly FavoriteGameService _favoriteGameService;
 
         [BindProperty]
-        public FavoriteGame? FavoriteGame { get; set; }
+        public FavoriteGame FavoriteGame { get; set; } = new();
 
         public List<FavoriteGame>? FavoriteGames { get; set; } = new List<FavoriteGame>();
 

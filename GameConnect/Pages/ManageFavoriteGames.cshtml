@@ -9,11 +9,8 @@
 {
     <br />
     <form method="post">
-        @if (Model.FavoriteGame != null)
-        {
-            <label asp-for="@Model.FavoriteGame.Name">Add a favorite game</label>
-            <input asp-for="@Model.FavoriteGame.Name" class="form-control" />
-        }
+        <label asp-for="@Model.FavoriteGame.Name">Add a favorite game</label>
+        <input asp-for="@Model.FavoriteGame.Name" class="form-control" />
         <br />
         <button class="btn btn-primary" type="submit">Add game</button>
         <br />
