@@ -22,12 +22,12 @@
                     {
                         @if (Model.Category is null)
                         {
-                            <button class=" btn-primary" value="@tag.Name-" name="TagName" type="submit">@tag.Name</button>
+                            <button class=" btn-primary" value="@tag.Name-" name="TagAndCategoryNames" type="submit">@tag.Name</button>
 
                         }
                         else
                         {
-                            <button class=" btn-primary" value="@tag.Name-@Model.Category.Name" name="TagName" type="submit">@tag.Name</button>
+                            <button class=" btn-primary" value="@tag.Name-@Model.Category.Name" name="TagAndCategoryNames" type="submit">@tag.Name</button>
                         }
                     }
                 </form>
