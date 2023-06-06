@@ -1,5 +1,6 @@
 ﻿@page
 @using GameConnect.Domain.Entities;
+@using Helpers
 @inject SignInManager<User> SignInManager;
 @model ForumModel
 @{
@@ -44,7 +45,9 @@
                         {
                             <div class="postTitle">@post.Title | Posted by:  <a asp-route-creatorUser="@post.UserId">@post.User.UserName</a></div>
                         }
-                        <div class="postText">@post.Text</div>
+                        <div class="postText">
+                           @post.Text.CensorWords(Model.BannedWords)
+                        </div>
                         <div class="postTags">
                             @if (post.Category != null && post.Tag != null)
                             {

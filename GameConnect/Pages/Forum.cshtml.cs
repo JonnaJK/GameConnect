@@ -1,10 +1,12 @@
 using GameConnect.Contracts.Responses;
 using GameConnect.DAL;
+using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
 using GameConnect.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 
 namespace GameConnect.Pages;
 
@@ -14,6 +16,7 @@ public class ForumModel : PageModel
     private readonly PostService _postService;
     private readonly VoteService _voteService;
     private readonly UserService _userService;
+    private readonly ApplicationDbContext _context;
 
     [BindProperty]
     public Category? Category { get; set; }
@@ -21,17 +24,21 @@ public class ForumModel : PageModel
     public string? TagAndCategoryNames { get; set; }
     public List<Post>? AllPosts { get; set; }
     public List<Tag> AllTags { get; set; } = new List<Tag>();
+    public List<BannedWord> BannedWords { get; set; }
 
-    public ForumModel(PostService postService, VoteService voteService, UserService userService, HttpService httpService)
+    public ForumModel(PostService postService, VoteService voteService, UserService userService, HttpService httpService, ApplicationDbContext context)
     {
         _postService = postService;
         _voteService = voteService;
         _userService = userService;
         _httpService = httpService;
+        _context = context;
     }
 
     public async Task<IActionResult> OnGetAsync(int upVotePostId, int downVotePostId, int postId, string categoryName, string tagName, string creatorUser)
-    {
+    {       
+        BannedWords = await _context.BannedWord.ToListAsync();
+
         if (!string.IsNullOrEmpty(creatorUser))
         {
             var userToVisit = await _userService.GetUserAsync(creatorUser);

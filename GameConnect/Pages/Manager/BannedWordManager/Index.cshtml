@@ -1,0 +1,36 @@
+﻿@page
+@model IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Banned words</h1>
+
+<p>
+    <a asp-page="./Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Word
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var word in Model.BannedWords)
+        {
+            <tr>
+                <td>
+                    @word.Title
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@word.Id">Edit</a> |
+                    <a asp-page="./Delete" asp-route-id="@word.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
