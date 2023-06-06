@@ -3,6 +3,8 @@ using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
+using System;
 
 namespace GameConnect.Pages
 {
@@ -63,14 +65,14 @@ namespace GameConnect.Pages
             if (sessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(sessionId);
-                //await SetReadByText();
+                await SetReadByText();
             }
             if (session != null)
             {
                 if (session.Id != 0)
                 {
                     ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(session.Id);
-                    //await SetReadByText();
+                    await SetReadByText();
                 }
             }
 
@@ -87,7 +89,7 @@ namespace GameConnect.Pages
             if (settingsSessionId != 0)
             {
                 ChatMessages = await _chatMessageService.ChatMessagesFromSessionIdAsync(settingsSessionId);
-                //await SetReadByText();
+                await SetReadByText();
 
                 ShowSettings = true;
                 var settingSession = await _sessionService.GetSessionAsync(settingsSessionId);
@@ -196,8 +198,22 @@ namespace GameConnect.Pages
                         ReadBy.Add(recipient.UserName ?? string.Empty, message.Id);
                         break;
                     }
+
+
                 }
             }
+            //var asd = new List<string>();
+            //foreach (var message in ChatMessages)
+            //{
+            //    if (ReadBy.ContainsValue(message.Id))
+            //    {
+            //        foreach (var kvp in ReadBy.Where(x => x.Value == message.Id))
+            //        {
+            //            asd.Add(kvp.Key);
+            //        }
+            //        var result = string.Join(", ", asd);
+            //    }
+            //}
             //var lastMessage = ChatMessages.Last(x => x.UserId == LoggedInUser.Id);
             //if (lastMessage.Recipients != null)
             //{
