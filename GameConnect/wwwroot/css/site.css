@@ -24,11 +24,9 @@ body {
     margin-top: 50px;
 }
 
-nav {
-    display: flex;
+.navbar {
     background-color: #55868C;
     box-shadow: #325458 0 8px 10px;
-    align-content: center;
 }
 
 .navbar-collapse{
@@ -39,6 +37,11 @@ nav {
     display: flex;
     justify-content: center;
     align-content: center;
+}
+
+.nav-item {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .btn:focus, .btn:active:focus {
@@ -58,12 +61,10 @@ nav {
 }
 
 .cornerBtn {
-    flex: 0 0 auto;
     color: black;
 }
 
 .cornerBtnNotice {
-    flex: 0 0 auto;
     color: black;
     background-color: red;
     border-radius: 10px 10px;
@@ -71,10 +72,6 @@ nav {
     height: 20px;
     text-align: center;
     align-self: center;
-}
-
-.centerBtn {
-    flex: 1 1 auto;
 }
 
 textarea {

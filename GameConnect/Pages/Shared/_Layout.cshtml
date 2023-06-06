@@ -47,10 +47,11 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+                    aria-expanded="true" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon">Menu</span>
             </button>
             <div class="navbar-collapse collapse">
+
                 <ul class="navbar-nav">
 
                     @if (SignInManager.IsSignedIn(User))
@@ -77,15 +78,15 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="navbar-brand btn btn-primary centerBt" asp-area="" asp-page="/Forum">Start</a>
+                            <a class="navbar-brand btn btn-primary centerBtn" asp-area="" asp-page="/Forum">Start</a>
                         </li>
+
                         @foreach (var category in categories)
                         {
                             <li class="nav-item">
-                                <a class="navbar-brand btn btn-primary centerBt" asp-area="" asp-page="/Forum" asp-route-categoryName="@category.Name">@category.Name</a>
+                                <a class="navbar-brand btn btn-primary centerBtn" asp-area="" asp-page="/Forum" asp-route-categoryName="@category.Name">@category.Name</a>
                             </li>
                         }
-
 
                         <li class="nav-item">
                             <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
@@ -93,7 +94,6 @@
                             </form>
                         </li>
                     }
-
                     else
                     {
                         <li class="nav-item">
@@ -104,6 +104,7 @@
                             <a class="navbar-brand btn btn-primary" asp-area="Identity" asp-page="/Account/Login">Login</a>
                         </li>
                     }
+
                     @if (isAdmin)
                     {
                         <li class="nav-item">
