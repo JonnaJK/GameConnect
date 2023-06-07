@@ -2,7 +2,7 @@
     background-image: url(/images/pexels-cottonbro-studio-3945655.jpg);
     background-size: cover;
     background-repeat: no-repeat;
-    overflow-y: hidden;
+    overflow-y: auto;
 }
 
 .mainPage {
