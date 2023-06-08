@@ -21,7 +21,7 @@
 @if (!string.IsNullOrEmpty(Model.SendMessageText))
 {
     <div>
-        <span><strong>Reply on post:</strong> @Model.SendMessageText.CensorWords(Model.BannedWords)</span>
+        <span><strong>Respond to:</strong> @Model.SendMessageText.CensorWords(Model.BannedWords)</span>
     </div>
 }
 
