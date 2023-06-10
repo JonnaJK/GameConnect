@@ -1,10 +1,12 @@
 using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
+using GameConnect.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace GameConnect.Pages
 {
@@ -38,6 +40,7 @@ namespace GameConnect.Pages
 
             BannedWords = await _context.BannedWord.ToListAsync();
             LoggedInUser = await _userService.GetUserAsync(User);
+
             // Reply on post or reply on reply
             if (postId != 0)
             {
@@ -63,45 +66,21 @@ namespace GameConnect.Pages
             // Upvote or downvote a post
             if (upVotePostId != 0)
             {
-                var isChanged = await _voteService.AddUpVoteOnPostAsync(LoggedInUser.Id, upVotePostId);
-                if (isChanged)
-                    await _postService.UpVotePostByIdAsync(upVotePostId);
-
-                post = await _postService.GetPostAsync(upVotePostId);
+                post = await _voteService.AddVoteOnPost(true, upVotePostId, LoggedInUser.Id);
             }
             else if (downVotePostId != 0)
             {
-                var isChanged = await _voteService.AddDownVoteOnPostAsync(LoggedInUser.Id, downVotePostId);
-                if (isChanged)
-                    await _postService.DownVotePostByIdAsync(downVotePostId);
-
-                post = await _postService.GetPostAsync(downVotePostId);
+                post = await _voteService.AddVoteOnPost(false, downVotePostId, LoggedInUser.Id);
             }
 
             // Upvote och downvote a reply
             if (upVoteReplyId != 0)
             {
-                var reply = await _replyService.GetReplyFromIdAsync(upVoteReplyId);
-                if (reply != null)
-                {
-                    var isChanged = await _voteService.AddUpVoteOnReplyAsync(LoggedInUser.Id, upVoteReplyId);
-                    if (isChanged)
-                        await _replyService.UpVoteReplyAsync(reply);
-
-                    post = await _postService.GetPostAsync(reply.PostId);
-                }
+                post = await _voteService.AddVoteOnReply(true, upVoteReplyId, LoggedInUser.Id);
             }
             else if (downVoteReplyId != 0)
             {
-                var reply = await _replyService.GetReplyFromIdAsync(downVoteReplyId);
-                if (reply != null)
-                {
-                    var isChanged = await _voteService.AddDownVoteOnReplyAsync(LoggedInUser.Id, downVoteReplyId);
-                    if (isChanged)
-                        await _replyService.DownVoteReplyAsync(reply);
-
-                    post = await _postService.GetPostAsync(reply.PostId);
-                }
+                post = await _voteService.AddVoteOnReply(false, downVoteReplyId, LoggedInUser.Id);
             }
 
             // Repost a post or a reply
@@ -120,7 +99,7 @@ namespace GameConnect.Pages
                 var reportedReply = await _replyService.GetReplyFromIdAsync(reportedReplyId);
                 if (reportedReply != null)
                 {
-                    post = await _postService.GetPostAsync(reportedReply.PostId);
+                    //post = await _postService.GetPostAsync(reportedReply.PostId);
                     reportedReply.IsReported = true;
                     await _context.SaveChangesAsync();
                 }
@@ -130,13 +109,11 @@ namespace GameConnect.Pages
             post = await _postService.GetPostAsync((post != null ? post.Id : 0));
             if (post != null)
             {
-
                 var postUser = await _userService.GetUserAsync(post.UserId);
                 if (postUser != null && postUser.Id == LoggedInUser.Id)
                 {
                     IsSameUser = true;
                 }
-
                 Post = await _postService.GetPostAsync(post.Id);
             }
             return Page();

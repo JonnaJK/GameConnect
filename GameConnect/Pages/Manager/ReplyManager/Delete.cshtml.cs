@@ -55,9 +55,9 @@ namespace GameConnect.Pages.Manager.ReplyManager
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+        public async Task<IActionResult> OnPostAsync(int id)
         {
-            if (id == null || _context.Reply == null)
+            if (id == 0)
             {
                 return NotFound();
             }

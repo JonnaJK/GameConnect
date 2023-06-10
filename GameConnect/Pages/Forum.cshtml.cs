@@ -88,15 +88,11 @@ public class ForumModel : PageModel
         {
             if (upVotePostId != 0)
             {
-                var isChanged = await _voteService.AddUpVoteOnPostAsync(user.Id, upVotePostId);
-                if (isChanged)
-                    await _postService.UpVotePostByIdAsync(upVotePostId);
+                _ = await _voteService.AddVoteOnPost(true, upVotePostId, user.Id);
             }
             if (downVotePostId != 0)
             {
-                var isChanged = await _voteService.AddDownVoteOnPostAsync(user.Id, downVotePostId);
-                if (isChanged)
-                    await _postService.DownVotePostByIdAsync(downVotePostId);
+                _ = await _voteService.AddVoteOnPost(false, downVotePostId, user.Id);
             }
         }
 

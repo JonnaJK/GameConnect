@@ -7,12 +7,17 @@ namespace GameConnect.Domain.Services;
 public class VoteService
 {
     private readonly ApplicationDbContext _context;
-    public VoteService(ApplicationDbContext context)
+    private readonly PostService _postService;
+    private readonly ReplyService _replyService;
+
+    public VoteService(ApplicationDbContext context, PostService postService, ReplyService replyService)
     {
         _context = context;
+        _postService = postService;
+        _replyService = replyService;
     }
 
-    public async Task<bool> AddUpVoteOnPostAsync(string userId, int postId)
+    public async Task<bool> AddVoteOnPostAsync(bool isUpvote, string userId, int postId)
     {
         var hasVoted = await CheckIfUserAlreadyHasVotedOnPostAsync(userId, postId);
         if (hasVoted)
@@ -20,15 +25,29 @@ public class VoteService
             var vote = await GetVoteByUserIdAsync(userId, postId, true);
             if (vote is null)
                 return false;
-
-            if (vote.IsUpvote)
+            if (isUpvote)
             {
-                return false;
+                if (vote.IsUpvote)
+                {
+                    return false;
+                }
+                else
+                {
+                    vote.IsUpvote = true;
+                    vote.IsDownvote = false;
+                }
             }
             else
             {
-                vote.IsUpvote = true;
-                vote.IsDownvote = false;
+                if (vote.IsDownvote)
+                {
+                    return false;
+                }
+                else
+                {
+                    vote.IsUpvote = false;
+                    vote.IsDownvote = true;
+                }
             }
         }
         else
@@ -37,81 +56,18 @@ public class VoteService
             {
                 PostId = postId,
                 UserId = userId,
-                IsUpvote = true
             };
-            await _context.Vote.AddAsync(vote);
-        }
-        _context.SaveChanges();
-        return true;
-    }
-
-    public async Task<bool> AddDownVoteOnPostAsync(string userId, int postId)
-    {
-        var hasVoted = await CheckIfUserAlreadyHasVotedOnPostAsync(userId, postId);
-        if (hasVoted)
-        {
-            var vote = await GetVoteByUserIdAsync(userId, postId, true);
-            if (vote is null)
-                return false;
-
-            if (vote.IsDownvote)
-            {
-                return false;
-            }
-            else
-            {
-                vote.IsDownvote = true;
-                vote.IsUpvote = false;
-            }
-        }
-        else
-        {
-            var vote = new Vote
-            {
-                PostId = postId,
-                UserId = userId,
-                IsDownvote = true
-            };
-            await _context.Vote.AddAsync(vote);
-        }
-        _context.SaveChanges();
-        return true;
-    }
-
-    public async Task<bool> AddUpVoteOnReplyAsync(string userId, int replyId)
-    {
-        var hasVoted = await CheckIfUserAlreadyHasVotedOnReplyAsync(userId, replyId);
-        if (hasVoted)
-        {
-            var vote = await GetVoteByUserIdAsync(userId, replyId, false);
-            if (vote is null)
-                return false;
-
-            if (vote.IsUpvote)
-            {
-                return false;
-            }
-            else
-            {
+            if (isUpvote)
                 vote.IsUpvote = true;
-                vote.IsDownvote = false;
-            }
-        }
-        else
-        {
-            var vote = new Vote
-            {
-                ReplyId = replyId,
-                UserId = userId,
-                IsUpvote = true
-            };
+            else
+                vote.IsDownvote = true;
             await _context.Vote.AddAsync(vote);
         }
         _context.SaveChanges();
         return true;
     }
 
-    public async Task<bool> AddDownVoteOnReplyAsync(string userId, int replyId)
+    public async Task<bool> AddVoteOnReplyAsync(bool isUpvote, string userId, int replyId)
     {
         var hasVoted = await CheckIfUserAlreadyHasVotedOnReplyAsync(userId, replyId);
         if (hasVoted)
@@ -119,25 +75,42 @@ public class VoteService
             var vote = await GetVoteByUserIdAsync(userId, replyId, false);
             if (vote is null)
                 return false;
-
-            if (vote.IsDownvote)
+            if (isUpvote)
             {
-                return false;
+                if (vote.IsUpvote)
+                {
+                    return false;
+                }
+                else
+                {
+                    vote.IsUpvote = true;
+                    vote.IsDownvote = false;
+                }
             }
             else
             {
-                vote.IsDownvote = true;
-                vote.IsUpvote = false;
+                if (vote.IsDownvote)
+                {
+                    return false;
+                }
+                else
+                {
+                    vote.IsUpvote = false;
+                    vote.IsDownvote = true;
+                }
             }
         }
         else
         {
             var vote = new Vote
             {
-                ReplyId = replyId,
+                PostId = replyId,
                 UserId = userId,
-                IsDownvote = true
             };
+            if (isUpvote)
+                vote.IsUpvote = true;
+            else
+                vote.IsDownvote = true;
             await _context.Vote.AddAsync(vote);
         }
         _context.SaveChanges();
@@ -216,5 +189,44 @@ public class VoteService
             }
         }
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<Post?> AddVoteOnPost(bool isUpvote, int postId, string userId)
+    {
+        if (isUpvote)
+        {
+            var isChanged = await AddVoteOnPostAsync(true, userId, postId);
+            if (isChanged)
+                await _postService.UpVotePostByIdAsync(postId);
+        }
+        else
+        {
+            var isChanged = await AddVoteOnPostAsync(false, userId, postId);
+            if (isChanged)
+                await _postService.DownVotePostByIdAsync(postId);
+        }
+
+        return await _postService.GetPostAsync(postId);
+    }
+
+    public async Task<Post?> AddVoteOnReply(bool isUpvote, int replyId, string userId)
+    {
+        var reply = await _replyService.GetReplyFromIdAsync(replyId);
+        if (reply != null)
+        {
+            if (isUpvote)
+            {
+                var isChanged = await AddVoteOnReplyAsync(true, userId, replyId);
+                if (isChanged)
+                    await _replyService.UpVoteReplyAsync(reply);
+            }
+            else
+            {
+                var isChanged = await AddVoteOnReplyAsync(false, userId, replyId);
+                if (isChanged)
+                    await _replyService.DownVoteReplyAsync(reply);
+            }
+        }
+        return await _postService.GetPostAsync(reply.PostId);
     }
 }

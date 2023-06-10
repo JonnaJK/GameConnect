@@ -1,10 +1,12 @@
 using GameConnect.Domain.Data;
 using GameConnect.Domain.Entities;
 using GameConnect.Domain.Services;
+using GameConnect.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GameConnect.Pages
@@ -63,46 +65,29 @@ namespace GameConnect.Pages
             // Upvote or downvote a post
             if (upVotePostId != 0)
             {
-                if (LoggedInUser != null)
-                {
-                    var isChanged = await _voteService.AddUpVoteOnPostAsync(LoggedInUser.Id, upVotePostId);
-                    if (isChanged)
-                        await _postService.UpVotePostByIdAsync(upVotePostId);
-
-                    var post = await _postService.GetPostAsync(upVotePostId);
-                    user = await _userService.GetUserAsync(post.UserId);
-                    if (user != null)
-                    {
-                        if (user.Id != LoggedInUser.Id)
-                        {
-                            IsSameUser = false;
-                            LoggedInUser = user;
-                        }
-                    }
-                }
+                var post = await _voteService.AddVoteOnPost(true, upVotePostId, LoggedInUser.Id);
+                await SetIsSameUser(post.UserId);
             }
             else if (downVotePostId != 0)
             {
-                if (LoggedInUser != null)
-                {
-                    var isChanged = await _voteService.AddDownVoteOnPostAsync(LoggedInUser.Id, downVotePostId);
-                    if (isChanged)
-                        await _postService.DownVotePostByIdAsync(downVotePostId);
-
-                    var post = await _postService.GetPostAsync(downVotePostId);
-                    user = await _userService.GetUserAsync(post.UserId);
-                    if (user != null)
-                    {
-                        if (user.Id != LoggedInUser.Id)
-                        {
-                            IsSameUser = false;
-                            LoggedInUser = user;
-                        }
-                    }
-                }
+                var post = await _voteService.AddVoteOnPost(false, downVotePostId, LoggedInUser.Id);
+                await SetIsSameUser(post.UserId);
             }
 
             return Page();
+        }
+
+        private async Task SetIsSameUser(string userId)
+        {
+            var user = await _userService.GetUserAsync(userId);
+            if (user != null)
+            {
+                if (user.Id != LoggedInUser.Id)
+                {
+                    IsSameUser = false;
+                    LoggedInUser = user;
+                }
+            }
         }
     }
 }
