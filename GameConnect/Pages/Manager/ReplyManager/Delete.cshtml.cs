@@ -69,7 +69,7 @@ namespace GameConnect.Pages.Manager.ReplyManager
                 Reply = reply;
                 foreach (var r in Reply.Replies)
                 {
-                    if (!string.IsNullOrEmpty(r.ImageUrl))
+                    if (r.ImageUrl != "defaultPost.jpg")
                     {
                         FileHelper.RemoveImage($"postImages/{r.ImageUrl}");
                     }
@@ -77,7 +77,7 @@ namespace GameConnect.Pages.Manager.ReplyManager
 
                     _context.Reply.Remove(r);
                 }
-                if (!string.IsNullOrEmpty(Reply.ImageUrl))
+                if (Reply.ImageUrl != "defaultPost.jpg")
                 {
                     FileHelper.RemoveImage($"postImages/{Reply.ImageUrl}");
                 }

@@ -65,7 +65,7 @@ namespace GameConnect.Pages.Manager.PostManager
             if (post != null)
             {
                 Post = post;
-                if (Post.ImageUrl != "/postImages/defaultPost.jpg")
+                if (Post.ImageUrl != "defaultPost.jpg")
                 {
                     FileHelper.RemoveImage($"postImages/{Post.ImageUrl}");
                 }
@@ -77,7 +77,7 @@ namespace GameConnect.Pages.Manager.PostManager
                         {
                             foreach (var r in reply.Replies)
                             {
-                                if (!string.IsNullOrEmpty(r.ImageUrl))
+                                if (r.ImageUrl != "defaultPost.jpg")
                                 {
                                     FileHelper.RemoveImage($"postImages/{r.ImageUrl}");
                                 }
@@ -85,7 +85,7 @@ namespace GameConnect.Pages.Manager.PostManager
                                 _context.Reply.Remove(r);
                             }
                         }
-                        if (!string.IsNullOrEmpty(reply.ImageUrl))
+                        if (reply.ImageUrl != "defaultPost.jpg")
                         {
                             FileHelper.RemoveImage($"postImages/{reply.ImageUrl}");
                         }
